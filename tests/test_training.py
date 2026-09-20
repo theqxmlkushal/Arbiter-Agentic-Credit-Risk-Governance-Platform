@@ -78,7 +78,7 @@ class TestCheckLeakage:
 class TestTrainCandidate:
     def test_produces_mlflow_run(self, tmp_path: object) -> None:
         from unittest.mock import MagicMock
-        from src.training.trainer import train_candidate
+        from src.training import trainer as _trainer_mod
 
         rng = np.random.RandomState(42)
         X = rng.rand(100, 4)
@@ -87,12 +87,12 @@ class TestTrainCandidate:
         mock_run = MagicMock()
         mock_run.info.run_id = "fake-run-id-12345"
 
-        with patch("mlflow.set_tracking_uri"), \
-             patch("mlflow.start_run", return_value=MagicMock(__enter__=MagicMock(return_value=mock_run), __exit__=MagicMock(return_value=False))), \
-             patch("mlflow.log_params"), \
-             patch("mlflow.log_metric"), \
-             patch("mlflow.sklearn.log_model"):
-            run_id = train_candidate(
+        mock_mlflow = MagicMock()
+        mock_mlflow.start_run.return_value.__enter__ = MagicMock(return_value=mock_run)
+        mock_mlflow.start_run.return_value.__exit__ = MagicMock(return_value=False)
+
+        with patch.object(_trainer_mod, "mlflow", mock_mlflow):
+            run_id = _trainer_mod.train_candidate(
                 "logistic_regression",
                 X,
                 y,
@@ -102,6 +102,10 @@ class TestTrainCandidate:
 
         assert isinstance(run_id, str)
         assert run_id == "fake-run-id-12345"
+        mock_mlflow.set_tracking_uri.assert_called_once()
+        mock_mlflow.start_run.assert_called_once()
+        mock_mlflow.log_params.assert_called_once()
+        mock_mlflow.sklearn.log_model.assert_called_once()
 
 
 # ============================================================================
