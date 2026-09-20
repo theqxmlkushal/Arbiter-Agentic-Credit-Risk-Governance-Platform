@@ -1,0 +1,124 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# Arbiter CD Pipeline — Deploy on tag push
+#
+# Triggered when a semver tag (v*.*.*) is pushed.  The workflow:
+#   1. Checks out the repo at the tagged commit.
+#   2. Authenticates to the target Kubernetes cluster via a kubeconfig secret.
+#   3. Applies the base K8s manifests (Deployments, Service, HPA).
+#   4. Patches the Argo Rollout CR to point at the new image tag.
+#   5. Waits for the rollout to stabilise (auto-aborts on error rate).
+#
+# Required GitHub Actions secrets:
+#   KUBE_CONFIG — Base64-encoded kubeconfig for the target cluster.
+#                 Generate with:  cat ~/.kube/config | base64 -w 0
+#   GHCR_TOKEN  — (optional) PAT for pulling ghcr.io images in a private
+#                 registry.  If the cluster uses imagePullSecrets backed by
+#                 GITHUB_TOKEN, this secret is not needed here.
+#
+# The rollout image command uses the GitHub org from the repository context:
+#   ghcr.io/<owner>/arbiter-api:<tag>
+# ──────────────────────────────────────────────────────────────────────────────
+
+name: CD — Deploy
+
+on:
+  push:
+    tags:
+      - "v*.*.*"          # semver tags only: v1.0.0, v0.3.1-rc1, etc.
+
+permissions:
+  contents: read
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_API: ghcr.io/${{ github.repository_owner }}/arbiter-api
+  ARGO_ROLLOUT: credit-model-rollout
+  ROLLOUT_TIMEOUT: 600s
+
+# ── Concurrency ─────────────────────────────────────────────────────────────
+concurrency:
+  group: deploy-${{ github.ref_name }}
+  cancel-in-progress: false          # never cancel an in-flight deploy
+
+# ── Jobs ────────────────────────────────────────────────────────────────────
+jobs:
+  deploy:
+    name: Deploy to Kubernetes
+    runs-on: ubuntu-latest
+    environment: production           # requires environment approval in GitHub
+    steps:
+      # ── 1. Checkout ────────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── 2. Authenticate to Kubernetes ──────────────────────────────────
+      - name: Set up kubeconfig
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+          echo "Kubeconfig written — cluster info:"
+          kubectl cluster-info
+
+      # ── 3. Install CLI tools ──────────────────────────────────────────
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: "v1.30.0"
+
+      - name: Install Argo Rollouts kubectl plugin
+        run: |
+          curl -LO https://github.com/argoproj/argo-rollouts/releases/latest/download/kubectl-argo-rollouts-linux-amd64
+          chmod +x kubectl-argo-rollouts-linux-amd64
+          sudo mv kubectl-argo-rollouts-linux-amd64 /usr/local/bin/kubectl-argo-rollouts
+          kubectl argo rollouts version
+
+      # ── 4. Apply base manifests ────────────────────────────────────────
+      - name: Apply K8s base manifests
+        run: |
+          echo "Applying k8s/base/ manifests …"
+          kubectl apply -k k8s/base/
+          echo "Waiting for deployments to be available …"
+          kubectl rollout status deployment/arbiter-api   --timeout=120s
+          kubectl rollout status deployment/arbiter-worker --timeout=120s
+
+      # ── 5. Patch Argo Rollout with new image ──────────────────────────
+      - name: Set rollout image to ${{ github.ref_name }}
+        run: |
+          IMAGE_REF="${{ env.IMAGE_API }}:${{ github.ref_name }}"
+          echo "Patching Argo Rollout: ${ARGO_ROLLOUT} → credit-model=${IMAGE_REF}"
+          kubectl argo rollouts set image "${ARGO_ROLLOUT}" \
+            "credit-model=${IMAGE_REF}"
+
+      # ── 6. Wait for rollout to stabilise ──────────────────────────────
+      - name: Wait for rollout health
+        run: |
+          echo "Waiting for rollout to complete (timeout=${ROLLOUT_TIMEOUT}) …"
+          kubectl argo rollouts status "${ARGO_ROLLOUT}" \
+            --watch \
+            --timeout "${ROLLOUT_TIMEOUT}"
+          echo "Rollout ${{ github.ref_name }} stabilised successfully."
+
+      # ── 7. Rollback on failure ────────────────────────────────────────
+      - name: Rollback if rollout failed
+        if: failure()
+        run: |
+          echo "Rollout failed — triggering rollback to last stable revision …"
+          kubectl argo rollouts undo "${ARGO_ROLLOUT}"
+          kubectl argo rollouts status "${ARGO_ROLLOUT}" \
+            --watch \
+            --timeout 300s
+          echo "Rollback complete."
+
+      # ── 8. Summary ────────────────────────────────────────────────────
+      - name: Deployment summary
+        if: success()
+        run: |
+          echo "## 🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Item | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| **Tag** | \`${{ github.ref_name }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Image** | \`${{ env.IMAGE_API }}:${{ github.ref_name }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Rollout** | \`${ARGO_ROLLOUT}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Status** | ✅ Stabilised |" >> $GITHUB_STEP_SUMMARY

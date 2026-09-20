@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: arbiter-worker
+  labels:
+    app: arbiter-worker
+    tier: orchestration
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: arbiter-worker
+  template:
+    metadata:
+      labels:
+        app: arbiter-worker
+        tier: orchestration
+    spec:
+      containers:
+        - name: worker
+          image: ghcr.io/arbiter/arbiter-worker:latest
+          command:
+            - prefect
+            - worker
+            - start
+            - --pool
+            - arbiter-pool
+          envFrom:
+            - configMapRef:
+                name: arbiter-config
+            - secretRef:
+                name: arbiter-secrets
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "2Gi"

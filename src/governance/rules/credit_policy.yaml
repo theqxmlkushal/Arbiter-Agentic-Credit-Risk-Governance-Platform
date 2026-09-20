@@ -1,0 +1,15 @@
+# Credit Risk Model Governance Policy
+# All thresholds here are hard constraints — the policy engine enforces them
+# deterministically before the LangGraph agent ever sees the evidence bundle.
+
+min_auc: 0.75                       # ROC-AUC must be >= 0.75
+max_dpd: 0.10                       # |demographic_parity_difference| must be <= 0.10
+max_ece: 0.05                       # Expected Calibration Error must be <= 0.05
+min_gini: 0.50                      # Gini coefficient must be >= 0.50
+champion_improvement_threshold: 0.01  # Candidate AUC must beat champion by >= 1%
+
+review_triggers:
+  - condition: "0.0 < dpd <= max_dpd"
+    label: "borderline_fairness"
+  - condition: "auc >= min_auc and auc < min_auc + 0.02"
+    label: "borderline_performance"

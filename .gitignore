@@ -1,0 +1,51 @@
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+
+# ── Virtual environment ───────────────────────────────────────────────────────
+.venv/
+venv/
+ENV/
+
+# ── Environment variables (SECRETS — never commit) ───────────────────────────
+.env
+
+# ── Testing ───────────────────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+.coverage.*
+
+# ── Linting / Typechecking ────────────────────────────────────────────────────
+.mypy_cache/
+.ruff_cache/
+
+# ── MLflow ────────────────────────────────────────────────────────────────────
+mlruns/
+mlflow.db
+mlflow-artifacts/
+
+# ── DVC (data versioning) ────────────────────────────────────────────────────
+/data/versioned/
+*.parquet
+.dvc/config.local
+
+# ── Quarantine ────────────────────────────────────────────────────────────────
+/quarantine/
+
+# ── IDE / Editor ──────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── OS ────────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: arbiter-api-svc
+  labels:
+    app: arbiter-api
+spec:
+  type: ClusterIP
+  selector:
+    app: arbiter-api
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8000
+      protocol: TCP
