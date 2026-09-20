@@ -3,14 +3,18 @@
 from __future__ import annotations
 
 import logging
+from typing import Any
 
 import numpy as np
+from numpy.typing import NDArray
 from sklearn.metrics import roc_auc_score
 
 logger = logging.getLogger(__name__)
 
 
-def compute_performance(y_true: np.ndarray, y_scores: np.ndarray) -> dict[str, float]:
+def compute_performance(
+    y_true: NDArray[np.floating[Any]], y_scores: NDArray[np.floating[Any]]
+) -> dict[str, float]:
     """Compute ROC-AUC and Gini coefficient for a set of predictions.
 
     Args:

@@ -263,7 +263,7 @@ def agent_task(evidence: object) -> str:
         "reasoning_trace": [],
     }
 
-    final_state = graph.invoke(initial_state)
+    final_state = graph.invoke(initial_state)  # type: ignore[attr-defined]
     return str(final_state["decision"])
 
 
@@ -342,8 +342,8 @@ def governance_pipeline(
 
     # ── Step 2: Validate ────────────────────────────────────────────
     validation_result = validate_task(df=df, schema=schema)
-    if not validation_result.is_valid:  # type: ignore[union-attr]
-        logger.warning("Validation failed — quarantining %d rows.", len(df))
+    if not validation_result.is_valid:  # type: ignore[attr-defined]
+        logger.warning("Validation failed — quarantining %d rows.", len(df))  # type: ignore[arg-type]
         quarantine_task(df=df, reason="schema_validation_failed")
         logger.info("Pipeline short-circuited: validation failed.")
         return

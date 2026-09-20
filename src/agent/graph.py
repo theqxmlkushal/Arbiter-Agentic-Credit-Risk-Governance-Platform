@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 
-from langgraph.graph import END, StateGraph  # type: ignore[import-untyped]
+from langgraph.graph import END, StateGraph  # noqa: F401
 
 from src.agent.nodes import decision_node, inspect_node, reasoning_node
 from src.agent.state import ArbiterState

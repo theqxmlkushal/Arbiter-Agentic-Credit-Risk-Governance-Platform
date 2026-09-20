@@ -3,20 +3,22 @@
 from __future__ import annotations
 
 import logging
+from typing import Any
 
 import numpy as np
-from fairlearn.metrics import (  # type: ignore[import-untyped]
+from fairlearn.metrics import (
     demographic_parity_difference,
     equalized_odds_difference,
 )
+from numpy.typing import NDArray
 
 logger = logging.getLogger(__name__)
 
 
 def compute_fairness(
-    y_true: np.ndarray,
-    y_pred: np.ndarray,
-    sensitive_features: np.ndarray,
+    y_true: NDArray[np.floating[Any]],
+    y_pred: NDArray[np.floating[Any]],
+    sensitive_features: NDArray[np.floating[Any]],
 ) -> dict[str, float]:
     """Compute fairness metrics across a protected attribute.
 

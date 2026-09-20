@@ -24,7 +24,7 @@ FEATURE_REFS: list[str] = [
 
 
 @router.post("/explain", response_model=ExplainResponse)
-async def explain(payload: PredictRequest, request: Request) -> ExplainResponse:
+async def explain(payload: PredictRequest, request: Request) -> ExplainResponse:  # type: ignore[type-arg]
     """Return per-feature SHAP values for the given applicant.
 
     Uses the cached ``TreeExplainer`` stored in ``app.state.explainer``

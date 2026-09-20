@@ -41,8 +41,8 @@ def detect_drift(reference: pd.DataFrame, current: pd.DataFrame) -> DriftReport:
         A :class:`DriftReport` summarising which features drifted and whether
         the dataset as a whole is considered drifted.
     """
-    from evidently.metric_preset import DataDriftPreset  # type: ignore[import-untyped]
-    from evidently.report import Report  # type: ignore[import-untyped]
+    from evidently.metric_preset import DataDriftPreset  # noqa: F401
+    from evidently.report import Report  # noqa: F401
 
     report = Report(metrics=[DataDriftPreset()])
     report.run(reference_data=reference, current_data=current)

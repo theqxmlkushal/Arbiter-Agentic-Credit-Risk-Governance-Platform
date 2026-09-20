@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Literal
+from typing import Any, Literal
 
 import yaml
 
@@ -12,7 +12,7 @@ from src.validation.report import ValidationReport
 logger = logging.getLogger(__name__)
 
 
-def load_policy(path: str) -> dict:
+def load_policy(path: str) -> dict[str, Any]:
     """Load a YAML governance policy file.
 
     Args:
@@ -22,14 +22,14 @@ def load_policy(path: str) -> dict:
         Parsed policy dict.
     """
     with open(path) as f:
-        policy = yaml.safe_load(f)
+        policy: dict[str, Any] = yaml.safe_load(f)
     logger.info("Loaded policy from %s: %s", path, list(policy.keys()))
     return policy
 
 
 def evaluate_policy(
     report: ValidationReport,
-    policy: dict,
+    policy: dict[str, Any],
 ) -> Literal["pass", "fail", "review"]:
     """Evaluate a :class:`ValidationReport` against a governance policy.
 

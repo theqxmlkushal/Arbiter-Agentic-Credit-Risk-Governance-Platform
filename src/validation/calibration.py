@@ -3,15 +3,17 @@
 from __future__ import annotations
 
 import logging
+from typing import Any
 
 import numpy as np
+from numpy.typing import NDArray
 
 logger = logging.getLogger(__name__)
 
 
 def expected_calibration_error(
-    y_true: np.ndarray,
-    y_prob: np.ndarray,
+    y_true: NDArray[np.floating[Any]],
+    y_prob: NDArray[np.floating[Any]],
     n_bins: int = 10,
 ) -> float:
     """Compute Expected Calibration Error from scratch (no external calibration library).

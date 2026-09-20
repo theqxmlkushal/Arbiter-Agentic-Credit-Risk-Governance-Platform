@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import logging
+from typing import Literal, cast
 
-from langchain_groq import ChatGroq  # type: ignore[import-untyped]
+from langchain_groq import ChatGroq  # noqa: F401
 
 from src.agent.prompts import format_rationale_prompt
 from src.agent.state import ArbiterState
@@ -39,7 +40,7 @@ def reasoning_node(state: ArbiterState) -> ArbiterState:
     llm = ChatGroq(model="llama-3.1-8b-instant", temperature=0)
     response = llm.invoke(prompt)
 
-    state["rationale"] = response.content
+    state["rationale"] = cast(str, response.content)
     state["reasoning_trace"].append("LLM rationale generated.")
     logger.info("Reasoning node complete — rationale length=%d chars", len(response.content))
     return state
@@ -58,7 +59,7 @@ def decision_node(state: ArbiterState) -> ArbiterState:
     mapping = {"pass": "promote", "fail": "reject", "review": "human_review"}
     decision = mapping[verdict]
 
-    state["decision"] = decision
+    state["decision"] = cast(Literal["promote", "reject", "human_review"], decision)
     state["reasoning_trace"].append(f"Policy verdict '{verdict}' mapped to '{decision}'.")
     logger.info("Decision node: verdict=%s → decision=%s", verdict, decision)
     return state

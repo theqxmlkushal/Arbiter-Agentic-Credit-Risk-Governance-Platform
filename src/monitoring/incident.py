@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+from typing import Any
 
 from src.deployment.rollback import rollback_to_last_stable
 
@@ -12,7 +13,7 @@ logger = logging.getLogger(__name__)
 _ROLLBACK_ALERTS: frozenset[str] = frozenset({"HighErrorRate", "FairnessDrift"})
 
 
-def handle_alert(alert_payload: dict) -> None:
+def handle_alert(alert_payload: dict[str, Any]) -> None:
     """Inspect a Prometheus Alertmanager webhook payload and act on it.
 
     Currently, the only action is an automated rollback when the alert is

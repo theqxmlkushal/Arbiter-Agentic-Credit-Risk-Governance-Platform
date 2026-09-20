@@ -59,7 +59,7 @@ async def get_online_features(
     # Import lazily so tests can mock the module without requiring a real
     # Feast / Redis installation.
     try:
-        from feast import FeatureStore  # type: ignore[import-untyped]
+        from feast import FeatureStore  # noqa: F401
 
         store = FeatureStore(repo_path="src/features")
         resp = store.get_online_features(

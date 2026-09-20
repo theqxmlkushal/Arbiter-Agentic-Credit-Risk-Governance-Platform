@@ -28,7 +28,7 @@ FEATURE_REFS: list[str] = [
 
 
 @router.post("/predict", response_model=PredictResponse)
-async def predict(payload: PredictRequest, request: Request) -> PredictResponse:
+async def predict(payload: PredictRequest, request: Request) -> PredictResponse:  # type: ignore[type-arg]
     """Score a single applicant for credit risk.
 
     1. Fetches the applicant's latest features from the Feast online store.

@@ -18,9 +18,9 @@ from __future__ import annotations
 import logging
 from datetime import timedelta
 
-from feast import Entity, FeatureView, Field, FileSource  # type: ignore[import-untyped]
-from feast.types import Float32, Int32  # type: ignore[import-untyped]
-from feast.value_type import ValueType  # type: ignore[import-untyped]
+from feast import Entity, FeatureView, Field, FileSource  # noqa: F401
+from feast.types import Float32, Int32  # noqa: F401
+from feast.value_type import ValueType  # noqa: F401
 
 logger = logging.getLogger(__name__)
 

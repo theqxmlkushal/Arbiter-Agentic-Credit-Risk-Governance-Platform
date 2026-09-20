@@ -23,10 +23,10 @@ def enable_distributed_backend(address: str | None = None) -> None:
                  cluster or starts a local one.
     """
     try:
-        import ray  # type: ignore[import-untyped]
-        from ray.util.joblib import register_ray  # type: ignore[import-untyped]
+        import ray  # noqa: F401
+        from ray.util.joblib import register_ray  # noqa: F401
 
-        init_kwargs: dict = {"ignore_reinit_error": True}
+        init_kwargs: dict[str, object] = {"ignore_reinit_error": True}
         if address:
             init_kwargs["address"] = address
 

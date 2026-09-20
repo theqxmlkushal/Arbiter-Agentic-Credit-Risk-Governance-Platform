@@ -3,16 +3,17 @@
 from __future__ import annotations
 
 import logging
+from typing import Any
 
 import mlflow
 from numpy.typing import ArrayLike
 
 logger = logging.getLogger(__name__)
 
-_MODEL_REGISTRY: dict[str, type] = {}
+_MODEL_REGISTRY: dict[str, type[Any]] = {}
 
 
-def _get_model_class(model_name: str, params: dict) -> object:
+def _get_model_class(model_name: str, params: dict[str, Any]) -> Any:
     """Lazy-import and instantiate the appropriate model class."""
     if model_name == "logistic_regression":
         from sklearn.linear_model import LogisticRegression
@@ -37,7 +38,7 @@ def train_candidate(
     model_name: str,
     X_train: ArrayLike,
     y_train: ArrayLike,
-    params: dict,
+    params: dict[str, Any],
     *,
     tracking_uri: str | None = None,
 ) -> str:
@@ -71,6 +72,6 @@ def train_candidate(
         # Serialize model
         mlflow.sklearn.log_model(model, artifact_path="model")
 
-        run_id = run.info.run_id
+        run_id: str = run.info.run_id
         logger.info("Training complete — run_id=%s, train_accuracy=%.4f", run_id, train_score)
         return run_id

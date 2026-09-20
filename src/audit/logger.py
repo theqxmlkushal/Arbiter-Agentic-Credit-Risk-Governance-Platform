@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime, timezone
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -38,13 +39,13 @@ def log_decision(
         supabase_url = supabase_url or settings.supabase_url
         supabase_key = supabase_key or settings.supabase_key
 
-    from supabase import create_client  # type: ignore[import-untyped]
+    from supabase import create_client  # type: ignore[attr-defined]
 
     client = create_client(supabase_url, supabase_key)
 
-    evidence_dump: dict = {}
+    evidence_dump: dict[str, Any] = {}
     if hasattr(evidence, "model_dump"):
-        evidence_dump = evidence.model_dump()  # type: ignore[union-attr]
+        evidence_dump = evidence.model_dump()
     elif isinstance(evidence, dict):
         evidence_dump = evidence
 
@@ -56,5 +57,5 @@ def log_decision(
     }
 
     logger.info("Audit log insert — decision=%s", decision)
-    client.table("audit_log").insert(payload).execute()  # type: ignore[union-attr]
+    client.table("audit_log").insert(payload).execute()
     logger.info("Audit log insert complete.")
