@@ -140,7 +140,9 @@ class TestRejectBranch:
             flows.governance_pipeline("data/test.parquet", force_retrain=True)
 
         mock_transition.assert_called_once_with(
-            name="credit_champion", version=7, stage="Archived",
+            name="credit_champion",
+            version=7,
+            stage="Archived",
         )
         mock_promote.assert_not_called()
         mock_canary.assert_not_called()
@@ -180,7 +182,9 @@ class TestHumanReviewBranch:
             flows.governance_pipeline("data/test.parquet", force_retrain=True)
 
         mock_transition.assert_called_once_with(
-            name="credit_champion", version=7, stage="Staging",
+            name="credit_champion",
+            version=7,
+            stage="Staging",
         )
         mock_promote.assert_not_called()
         mock_canary.assert_not_called()

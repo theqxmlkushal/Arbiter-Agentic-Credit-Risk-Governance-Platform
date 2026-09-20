@@ -74,15 +74,17 @@ class TestDetectDrift:
         current = _make_shifted()
         mock_report_instance = MagicMock()
         mock_report_instance.as_dict.return_value = {
-            "metrics": [{
-                "result": {
-                    "drift_by_columns": {
-                        "feature_a": {"drift_detected": True},
-                        "feature_b": {"drift_detected": False},
-                    },
-                    "dataset_drift": True,
+            "metrics": [
+                {
+                    "result": {
+                        "drift_by_columns": {
+                            "feature_a": {"drift_detected": True},
+                            "feature_b": {"drift_detected": False},
+                        },
+                        "dataset_drift": True,
+                    }
                 }
-            }]
+            ]
         }
         _install_evidently_mock(mock_report_instance)
         try:
@@ -98,15 +100,17 @@ class TestDetectDrift:
         current = _make_reference()
         mock_report_instance = MagicMock()
         mock_report_instance.as_dict.return_value = {
-            "metrics": [{
-                "result": {
-                    "drift_by_columns": {
-                        "feature_a": {"drift_detected": False},
-                        "feature_b": {"drift_detected": False},
-                    },
-                    "dataset_drift": False,
+            "metrics": [
+                {
+                    "result": {
+                        "drift_by_columns": {
+                            "feature_a": {"drift_detected": False},
+                            "feature_b": {"drift_detected": False},
+                        },
+                        "dataset_drift": False,
+                    }
                 }
-            }]
+            ]
         }
         _install_evidently_mock(mock_report_instance)
         try:

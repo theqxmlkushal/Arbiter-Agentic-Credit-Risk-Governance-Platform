@@ -148,7 +148,11 @@ def retrain_task(
 
     train, test = build_splits(df, target=target, cutoff_date=cutoff_date)
 
-    feature_cols = [c for c in train.columns if c not in (target, "as_of_date", "applicant_id", "source", "sample_weight")]
+    feature_cols = [
+        c
+        for c in train.columns
+        if c not in (target, "as_of_date", "applicant_id", "source", "sample_weight")
+    ]
     X_train = train[feature_cols].values
     y_train = train[target].values
 

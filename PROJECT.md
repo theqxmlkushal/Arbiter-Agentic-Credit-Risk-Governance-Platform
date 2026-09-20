@@ -238,6 +238,7 @@ class Settings(BaseSettings):
     groq_api_key: str
     redis_host: str = "localhost"
 
+
 def get_settings() -> Settings: ...
 ```
 
@@ -246,6 +247,7 @@ def get_settings() -> Settings: ...
 from functools import lru_cache
 from pydantic_settings import BaseSettings
 
+
 class Settings(BaseSettings):
     mlflow_tracking_uri: str = "http://localhost:5000"
     redis_host: str = "localhost"
@@ -253,6 +255,7 @@ class Settings(BaseSettings):
 
     class Config:
         env_file = ".env"
+
 
 @lru_cache
 def get_settings() -> Settings:
@@ -276,10 +279,12 @@ def merge_sources(frames: list[pd.DataFrame]) -> pd.DataFrame: ...
 import pandas as pd
 from datetime import datetime
 
+
 def load_historical(path: str) -> pd.DataFrame:
     df = pd.read_parquet(path)
     df["source"] = "historical"
     return df
+
 
 def merge_sources(frames: list[pd.DataFrame]) -> pd.DataFrame:
     merged = pd.concat(frames, ignore_index=True)
@@ -296,6 +301,7 @@ def merge_sources(frames: list[pd.DataFrame]) -> pd.DataFrame:
 class ValidationResult(BaseModel):
     is_valid: bool
     failed_rules: list[str]
+
 
 def validate_schema(df: pd.DataFrame, schema: dict) -> ValidationResult: ...
 def check_ranges(df: pd.DataFrame, ranges: dict[str, tuple]) -> list[str]: ...
@@ -346,6 +352,7 @@ def snapshot_dataset(df: pd.DataFrame, name: str) -> str:  # returns dvc hash
 ```python
 import subprocess, hashlib
 
+
 def snapshot_dataset(df: pd.DataFrame, name: str) -> str:
     path = f"data/versioned/{name}.parquet"
     df.to_parquet(path)
@@ -362,7 +369,9 @@ def snapshot_dataset(df: pd.DataFrame, name: str) -> str:
 **Key signatures:**
 ```python
 applicant = Entity(name="applicant_id", join_keys=["applicant_id"])
-credit_features_view = FeatureView(name="credit_features", entities=[applicant], ttl=timedelta(days=1), schema=[...])
+credit_features_view = FeatureView(
+    name="credit_features", entities=[applicant], ttl=timedelta(days=1), schema=[...]
+)
 ```
 
 **Snippet:**
@@ -400,6 +409,7 @@ from feast import FeatureStore
 
 _store = FeatureStore(repo_path="src/features")
 
+
 async def get_online_features(entity_id: str, feature_refs: list[str]) -> dict[str, float]:
     resp = _store.get_online_features(
         features=feature_refs, entity_rows=[{"applicant_id": entity_id}]
@@ -418,6 +428,7 @@ class DriftReport(BaseModel):
     drifted_features: list[str]
     dataset_drift: bool
 
+
 def detect_drift(reference: pd.DataFrame, current: pd.DataFrame) -> DriftReport: ...
 ```
 
@@ -425,6 +436,7 @@ def detect_drift(reference: pd.DataFrame, current: pd.DataFrame) -> DriftReport:
 ```python
 from evidently.report import Report
 from evidently.metric_preset import DataDriftPreset
+
 
 def detect_drift(reference: pd.DataFrame, current: pd.DataFrame) -> DriftReport:
     report = Report(metrics=[DataDriftPreset()])
@@ -458,7 +470,9 @@ def is_persistent_drift(recent_reports: list[DriftReport], min_consecutive: int 
 
 **Key signatures:**
 ```python
-def build_splits(df: pd.DataFrame, target: str, cutoff_date: datetime) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]: ...
+def build_splits(
+    df: pd.DataFrame, target: str, cutoff_date: datetime
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]: ...
 def check_leakage(train: pd.DataFrame, test: pd.DataFrame, key: str) -> bool: ...
 ```
 
@@ -486,6 +500,7 @@ def enable_distributed_backend(address: str | None = None) -> None: ...
 import ray
 from ray.util.joblib import register_ray
 
+
 def enable_distributed_backend(address: str | None = None) -> None:
     ray.init(address=address or "auto", ignore_reinit_error=True)
     register_ray()
@@ -506,6 +521,7 @@ def train_candidate(model_name: str, X_train, y_train, params: dict) -> str:  # 
 ```python
 import mlflow
 from sklearn.linear_model import LogisticRegression
+
 
 def train_candidate(model_name: str, X_train, y_train, params: dict) -> str:
     with mlflow.start_run(run_name=model_name) as run:
@@ -530,6 +546,7 @@ def transition_stage(name: str, version: int, stage: str) -> None: ...
 ```python
 from mlflow.tracking import MlflowClient
 
+
 def transition_stage(name: str, version: int, stage: str) -> None:
     client = MlflowClient()
     client.transition_model_version_stage(name=name, version=version, stage=stage)
@@ -543,12 +560,15 @@ def transition_stage(name: str, version: int, stage: str) -> None:
 **Key signatures:**
 ```python
 def compute_performance(y_true, y_scores) -> dict[str, float]: ...
-def is_significant_improvement(champion_auc: float, candidate_auc: float, threshold: float = 0.01) -> bool: ...
+def is_significant_improvement(
+    champion_auc: float, candidate_auc: float, threshold: float = 0.01
+) -> bool: ...
 ```
 
 **Snippet:**
 ```python
 from sklearn.metrics import roc_auc_score
+
 
 def compute_performance(y_true, y_scores) -> dict[str, float]:
     auc = roc_auc_score(y_true, y_scores)
@@ -569,6 +589,7 @@ def compute_fairness(y_true, y_pred, sensitive_features) -> dict[str, float]: ..
 ```python
 from fairlearn.metrics import demographic_parity_difference
 
+
 def compute_fairness(y_true, y_pred, sensitive_features) -> dict[str, float]:
     dpd = demographic_parity_difference(y_true, y_pred, sensitive_features=sensitive_features)
     return {"demographic_parity_difference": dpd}
@@ -587,6 +608,7 @@ def expected_calibration_error(y_true, y_prob, n_bins: int = 10) -> float: ...
 **Snippet:**
 ```python
 import numpy as np
+
 
 def expected_calibration_error(y_true, y_prob, n_bins: int = 10) -> float:
     bins = np.linspace(0, 1, n_bins + 1)
@@ -618,8 +640,12 @@ def build_validation_report(...) -> ValidationReport: ...
 **Snippet:**
 ```python
 def build_validation_report(perf, fairness, ece, min_auc=0.75, max_dpd=0.1) -> ValidationReport:
-    passed = perf["roc_auc"] >= min_auc and abs(fairness["demographic_parity_difference"]) <= max_dpd
-    return ValidationReport(performance=perf, fairness=fairness, calibration=ece, passed_hard_constraints=passed)
+    passed = (
+        perf["roc_auc"] >= min_auc and abs(fairness["demographic_parity_difference"]) <= max_dpd
+    )
+    return ValidationReport(
+        performance=perf, fairness=fairness, calibration=ece, passed_hard_constraints=passed
+    )
 ```
 
 ---
@@ -630,16 +656,20 @@ def build_validation_report(perf, fairness, ece, min_auc=0.75, max_dpd=0.1) -> V
 **Key signatures:**
 ```python
 def load_policy(path: str) -> dict: ...
-def evaluate_policy(report: ValidationReport, policy: dict) -> Literal["pass", "fail", "review"]: ...
+def evaluate_policy(
+    report: ValidationReport, policy: dict
+) -> Literal["pass", "fail", "review"]: ...
 ```
 
 **Snippet:**
 ```python
 import yaml
 
+
 def load_policy(path: str) -> dict:
     with open(path) as f:
         return yaml.safe_load(f)
+
 
 def evaluate_policy(report: ValidationReport, policy: dict) -> str:
     if report.performance["roc_auc"] < policy["min_auc"]:
@@ -661,12 +691,15 @@ class EvidenceBundle(BaseModel):
     drift: DriftReport
     policy_verdict: str
 
+
 def compile_evidence(validation, drift, verdict) -> EvidenceBundle: ...
 ```
 
 **Snippet:**
 ```python
-def compile_evidence(validation: ValidationReport, drift: DriftReport, verdict: str) -> EvidenceBundle:
+def compile_evidence(
+    validation: ValidationReport, drift: DriftReport, verdict: str
+) -> EvidenceBundle:
     return EvidenceBundle(validation=validation, drift=drift, policy_verdict=verdict)
 ```
 
@@ -686,6 +719,7 @@ class ArbiterState(TypedDict):
 **Snippet:**
 ```python
 from typing import TypedDict, NotRequired, Literal
+
 
 class ArbiterState(TypedDict):
     evidence: EvidenceBundle
@@ -729,6 +763,7 @@ def build_arbiter_graph() -> CompiledGraph: ...
 ```python
 from langgraph.graph import StateGraph, END
 
+
 def build_arbiter_graph():
     graph = StateGraph(ArbiterState)
     graph.add_node("inspect", inspect_node)
@@ -749,6 +784,8 @@ def build_arbiter_graph():
 **Key signatures:**
 ```python
 RATIONALE_PROMPT: str
+
+
 def format_rationale_prompt(evidence: EvidenceBundle) -> str: ...
 ```
 
@@ -758,6 +795,7 @@ RATIONALE_PROMPT = (
     "You are a credit-risk governance reviewer. Given this evidence: {evidence}, "
     "write a 3-sentence plain-English rationale for the decision."
 )
+
 
 def format_rationale_prompt(evidence: EvidenceBundle) -> str:
     return RATIONALE_PROMPT.format(evidence=evidence.model_dump_json())
@@ -771,6 +809,8 @@ def format_rationale_prompt(evidence: EvidenceBundle) -> str:
 **Key signatures:**
 ```python
 app: FastAPI
+
+
 @app.on_event("startup")
 async def load_model() -> None: ...
 ```
@@ -784,6 +824,7 @@ app = FastAPI(title="Arbiter Serving API")
 app.include_router(predict.router)
 app.include_router(explain.router)
 app.include_router(health.router)
+
 
 @app.on_event("startup")
 async def load_model() -> None:
@@ -806,6 +847,7 @@ async def predict(payload: PredictRequest) -> PredictResponse: ...
 from fastapi import APIRouter, Request
 
 router = APIRouter()
+
 
 @router.post("/predict")
 async def predict(payload: PredictRequest, request: Request) -> PredictResponse:
@@ -866,6 +908,7 @@ def build_explainer(model) -> shap.TreeExplainer: ...
 ```python
 import shap
 
+
 def build_explainer(model) -> shap.TreeExplainer:
     return shap.TreeExplainer(model)
 ```
@@ -877,17 +920,28 @@ def build_explainer(model) -> shap.TreeExplainer:
 
 **Key signatures:**
 ```python
-class PredictRequest(BaseModel): applicant_id: str
-class PredictResponse(BaseModel): applicant_id: str; risk_score: float
-class ExplainResponse(BaseModel): applicant_id: str; shap_values: list[float]
+class PredictRequest(BaseModel):
+    applicant_id: str
+
+
+class PredictResponse(BaseModel):
+    applicant_id: str
+    risk_score: float
+
+
+class ExplainResponse(BaseModel):
+    applicant_id: str
+    shap_values: list[float]
 ```
 
 **Snippet:**
 ```python
 from pydantic import BaseModel
 
+
 class PredictRequest(BaseModel):
     applicant_id: str
+
 
 class PredictResponse(BaseModel):
     applicant_id: str
@@ -909,11 +963,20 @@ def start_canary(model_name: str, version: int) -> None: ...
 ```python
 import subprocess
 
+
 def start_canary(model_name: str, version: int) -> None:
-    subprocess.run([
-        "kubectl", "argo", "rollouts", "set", "image",
-        "credit-model-rollout", f"model={model_name}:{version}"
-    ], check=True)
+    subprocess.run(
+        [
+            "kubectl",
+            "argo",
+            "rollouts",
+            "set",
+            "image",
+            "credit-model-rollout",
+            f"model={model_name}:{version}",
+        ],
+        check=True,
+    )
 ```
 
 ---
@@ -940,6 +1003,8 @@ def rollback_to_last_stable() -> None:
 **Key signatures:**
 ```python
 PREDICTION_LATENCY: Histogram
+
+
 def record_prediction(latency_s: float, score: float) -> None: ...
 ```
 
@@ -948,6 +1013,7 @@ def record_prediction(latency_s: float, score: float) -> None: ...
 from prometheus_client import Histogram
 
 PREDICTION_LATENCY = Histogram("prediction_latency_seconds", "Prediction latency")
+
 
 def record_prediction(latency_s: float, score: float) -> None:
     PREDICTION_LATENCY.observe(latency_s)
@@ -984,13 +1050,16 @@ def log_decision(evidence: EvidenceBundle, decision: str, rationale: str) -> Non
 ```python
 from supabase import create_client
 
+
 def log_decision(evidence: EvidenceBundle, decision: str, rationale: str) -> None:
     client = create_client(settings.supabase_url, settings.supabase_key)
-    client.table("audit_log").insert({
-        "evidence": evidence.model_dump(),
-        "decision": decision,
-        "rationale": rationale,
-    }).execute()
+    client.table("audit_log").insert(
+        {
+            "evidence": evidence.model_dump(),
+            "decision": decision,
+            "rationale": rationale,
+        }
+    ).execute()
 ```
 
 ---
@@ -1008,8 +1077,10 @@ def governance_pipeline(dataset_path: str) -> None: ...
 ```python
 from prefect import flow, task
 
+
 @task
 def run_validation(model, X_val, y_val) -> ValidationReport: ...
+
 
 @flow
 def governance_pipeline(dataset_path: str) -> None:
@@ -1037,8 +1108,10 @@ def governance_pipeline(dataset_path: str) -> None:
 ```python
 def test_evaluate_policy_fails_on_low_auc():
     report = ValidationReport(
-        performance={"roc_auc": 0.6}, fairness={"demographic_parity_difference": 0.0},
-        calibration=0.02, passed_hard_constraints=False,
+        performance={"roc_auc": 0.6},
+        fairness={"demographic_parity_difference": 0.0},
+        calibration=0.02,
+        passed_hard_constraints=False,
     )
     policy = {"min_auc": 0.75, "max_dpd": 0.1}
     assert evaluate_policy(report, policy) == "fail"

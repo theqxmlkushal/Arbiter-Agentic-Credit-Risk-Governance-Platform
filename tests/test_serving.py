@@ -55,9 +55,10 @@ def client() -> TestClient:
     mock_model = _mock_model()
     mock_explainer = _mock_explainer()
 
-    with patch("src.serving.routes.predict.get_online_features") as mock_feat, \
-         patch("src.serving.routes.explain.get_online_features") as mock_exp_feat:
-
+    with (
+        patch("src.serving.routes.predict.get_online_features") as mock_feat,
+        patch("src.serving.routes.explain.get_online_features") as mock_exp_feat,
+    ):
         mock_feat.return_value = _FEATURES
         mock_exp_feat.return_value = _FEATURES
 
@@ -100,6 +101,7 @@ class TestPredict:
     def test_online_features_called(self, client: TestClient) -> None:
         client.post("/predict", json={"applicant_id": "A999"})
         import src.serving.routes.predict as predict_mod
+
         predict_mod.get_online_features.assert_called()
 
 

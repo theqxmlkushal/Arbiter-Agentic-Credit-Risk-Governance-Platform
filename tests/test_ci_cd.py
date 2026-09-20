@@ -188,8 +188,7 @@ class TestCDWorkflow:
         cd = _load_cd()
         deploy_job = cd["jobs"]["deploy"]
         rollback_steps = [
-            s for s in deploy_job["steps"]
-            if s.get("if", "").lower().startswith("failure")
+            s for s in deploy_job["steps"] if s.get("if", "").lower().startswith("failure")
         ]
         assert len(rollback_steps) > 0, "CD should have a rollback step on failure"
         rollback_commands = " ".join(str(s) for s in rollback_steps)

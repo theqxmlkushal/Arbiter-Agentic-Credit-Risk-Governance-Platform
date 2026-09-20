@@ -107,7 +107,9 @@ class TestBuildValidationReport:
                 {"roc_auc": 0.85, "gini": 0.70},
                 {"demographic_parity_difference": 0.05, "equalized_odds_difference": 0.03},
                 0.03,
-                0.75, 0.1, 0.05,
+                0.75,
+                0.1,
+                0.05,
                 True,
             ),
             # Case 2: perf fail (AUC too low)
@@ -115,7 +117,9 @@ class TestBuildValidationReport:
                 {"roc_auc": 0.65, "gini": 0.30},
                 {"demographic_parity_difference": 0.05, "equalized_odds_difference": 0.03},
                 0.03,
-                0.75, 0.1, 0.05,
+                0.75,
+                0.1,
+                0.05,
                 False,
             ),
             # Case 3: fairness fail (DPD too high)
@@ -123,7 +127,9 @@ class TestBuildValidationReport:
                 {"roc_auc": 0.85, "gini": 0.70},
                 {"demographic_parity_difference": 0.20, "equalized_odds_difference": 0.15},
                 0.03,
-                0.75, 0.1, 0.05,
+                0.75,
+                0.1,
+                0.05,
                 False,
             ),
             # Case 4: calibration fail
@@ -131,7 +137,9 @@ class TestBuildValidationReport:
                 {"roc_auc": 0.85, "gini": 0.70},
                 {"demographic_parity_difference": 0.05, "equalized_odds_difference": 0.03},
                 0.10,
-                0.75, 0.1, 0.05,
+                0.75,
+                0.1,
+                0.05,
                 False,
             ),
             # Case 5: boundary — AUC exactly at threshold
@@ -139,7 +147,9 @@ class TestBuildValidationReport:
                 {"roc_auc": 0.75, "gini": 0.50},
                 {"demographic_parity_difference": 0.0, "equalized_odds_difference": 0.0},
                 0.0,
-                0.75, 0.1, 0.05,
+                0.75,
+                0.1,
+                0.05,
                 True,
             ),
         ],
@@ -156,8 +166,12 @@ class TestBuildValidationReport:
         expected: bool,
     ) -> None:
         report = build_validation_report(
-            perf, fairness, ece,
-            min_auc=min_auc, max_dpd=max_dpd, max_ece=max_ece,
+            perf,
+            fairness,
+            ece,
+            min_auc=min_auc,
+            max_dpd=max_dpd,
+            max_ece=max_ece,
         )
         assert isinstance(report, ValidationReport)
         assert report.passed_hard_constraints == expected

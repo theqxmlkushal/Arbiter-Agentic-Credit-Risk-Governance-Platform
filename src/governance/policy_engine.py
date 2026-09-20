@@ -72,7 +72,9 @@ def evaluate_policy(
         # The report doesn't carry sample size directly; check row_count if available
         row_count = report.performance.get("row_count", float("inf"))
         if row_count < min_sample:
-            logger.warning("Policy FAIL: sample_size=%d < min_sample_size=%d", row_count, min_sample)
+            logger.warning(
+                "Policy FAIL: sample_size=%d < min_sample_size=%d", row_count, min_sample
+            )
             return "fail"
 
     # --- Review: borderline fairness ---
@@ -80,7 +82,9 @@ def evaluate_policy(
         if dpd <= 2 * max_dpd:
             logger.info(
                 "Policy REVIEW: dpd=%.4f is borderline (max=%.4f, 2x=%.4f)",
-                dpd, max_dpd, 2 * max_dpd,
+                dpd,
+                max_dpd,
+                2 * max_dpd,
             )
             return "review"
         logger.warning("Policy FAIL: dpd=%.4f is egregiously above threshold", dpd)
@@ -91,7 +95,9 @@ def evaluate_policy(
         if ece <= 2 * max_ece:
             logger.info(
                 "Policy REVIEW: ece=%.4f is borderline (max=%.4f, 2x=%.4f)",
-                ece, max_ece, 2 * max_ece,
+                ece,
+                max_ece,
+                2 * max_ece,
             )
             return "review"
         logger.warning("Policy FAIL: ece=%.4f is egregiously above threshold", ece)

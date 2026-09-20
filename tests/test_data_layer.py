@@ -47,7 +47,7 @@ def overlapping_frame() -> pd.DataFrame:
         {
             "applicant_id": ["A001", "A004"],
             "as_of_date": pd.to_datetime(["2024-01-01", "2024-01-03"]),
-            "credit_score": [725, 700],   # updated score for A001
+            "credit_score": [725, 700],  # updated score for A001
             "annual_income": [80_000.0, 95_000.0],
             "source": ["live", "live"],
         }
@@ -94,9 +94,7 @@ class TestMergeSources:
         assert int(a001_row["credit_score"].iloc[0]) == 725
         assert a001_row["source"].iloc[0] == "live"
 
-    def test_non_overlapping_frames_all_rows_present(
-        self, base_frame: pd.DataFrame
-    ) -> None:
+    def test_non_overlapping_frames_all_rows_present(self, base_frame: pd.DataFrame) -> None:
         """With no overlapping keys the result is simply the union."""
         extra = pd.DataFrame(
             {
@@ -122,7 +120,9 @@ class TestMergeSources:
 
     def test_missing_dedup_key_raises(self) -> None:
         """A frame without 'applicant_id' should raise ValueError."""
-        bad_frame = pd.DataFrame({"foo": [1, 2], "as_of_date": pd.to_datetime(["2024-01-01", "2024-01-02"])})
+        bad_frame = pd.DataFrame(
+            {"foo": [1, 2], "as_of_date": pd.to_datetime(["2024-01-01", "2024-01-02"])}
+        )
         with pytest.raises(ValueError, match="applicant_id"):
             merge_sources([bad_frame])
 
@@ -176,9 +176,7 @@ class TestValidateSchema:
         assert len(result.failed_rules) == 3
 
     def test_null_counts_populated(self) -> None:
-        df = pd.DataFrame(
-            {"applicant_id": ["A001", None], "credit_score": [700, 650]}
-        )
+        df = pd.DataFrame({"applicant_id": ["A001", None], "credit_score": [700, 650]})
         schema = {"applicant_id": "object", "credit_score": "int64"}
         result = validate_schema(df, schema)
         # A null doesn't automatically fail schema (dtype may still match)
@@ -264,9 +262,7 @@ class TestQuarantineRows:
         # original rows preserved (metadata columns are additive)
         assert len(recovered) == len(base_frame)
 
-    def test_alert_called_exactly_once(
-        self, tmp_path: Path, base_frame: pd.DataFrame
-    ) -> None:
+    def test_alert_called_exactly_once(self, tmp_path: Path, base_frame: pd.DataFrame) -> None:
         with patch("src.data.quarantine.alert_on_quarantine") as mock_alert:
             quarantine_rows(base_frame, reason="dtype_fail", quarantine_dir=tmp_path)
 
@@ -311,9 +307,7 @@ class TestAlertOnQuarantine:
 
 
 class TestSnapshotDataset:
-    def test_returns_64_char_hex_string(
-        self, tmp_path: Path, base_frame: pd.DataFrame
-    ) -> None:
+    def test_returns_64_char_hex_string(self, tmp_path: Path, base_frame: pd.DataFrame) -> None:
         with patch("subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(returncode=0)
             result = snapshot_dataset(base_frame, "test_snap", versioned_dir=tmp_path)
@@ -342,9 +336,7 @@ class TestSnapshotDataset:
         assert cmd_args[0] == "dvc"
         assert cmd_args[1] == "add"
 
-    def test_dvc_failure_propagates(
-        self, tmp_path: Path, base_frame: pd.DataFrame
-    ) -> None:
+    def test_dvc_failure_propagates(self, tmp_path: Path, base_frame: pd.DataFrame) -> None:
         with patch("subprocess.run") as mock_run:
             mock_run.side_effect = subprocess.CalledProcessError(
                 returncode=1, cmd=["dvc", "add", "x"]

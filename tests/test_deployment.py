@@ -35,8 +35,13 @@ class TestStartCanary:
         mock_sub.run.assert_called_once()
         cmd = mock_sub.run.call_args[0][0]
         assert cmd == [
-            "kubectl", "argo", "rollouts", "set", "image",
-            "credit-model-rollout", "credit-model=arbiter-api:abc1234",
+            "kubectl",
+            "argo",
+            "rollouts",
+            "set",
+            "image",
+            "credit-model-rollout",
+            "credit-model=arbiter-api:abc1234",
         ]
 
     def test_check_true_passed_to_subprocess(self) -> None:
@@ -57,7 +62,11 @@ class TestRollbackToLastStable:
         mock_sub.run.assert_called_once()
         cmd = mock_sub.run.call_args[0][0]
         assert cmd == [
-            "kubectl", "argo", "rollouts", "undo", "credit-model-rollout",
+            "kubectl",
+            "argo",
+            "rollouts",
+            "undo",
+            "credit-model-rollout",
         ]
 
     def test_check_true_passed_to_subprocess(self) -> None:

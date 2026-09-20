@@ -26,30 +26,22 @@ class TestRecordPrediction:
         """After one call, the histogram's sample count should be >= 1."""
         # Record the current sample count before the call.
         before = PREDICTION_LATENCY.collect()[0].samples
-        count_before = sum(
-            s.value for s in before if s.name == "prediction_latency_seconds_count"
-        )
+        count_before = sum(s.value for s in before if s.name == "prediction_latency_seconds_count")
 
         record_prediction(latency_s=0.042, score=0.87)
 
         after = PREDICTION_LATENCY.collect()[0].samples
-        count_after = sum(
-            s.value for s in after if s.name == "prediction_latency_seconds_count"
-        )
+        count_after = sum(s.value for s in after if s.name == "prediction_latency_seconds_count")
         assert count_after == count_before + 1
 
     def test_score_histogram_count_increments(self) -> None:
         before = PREDICTION_SCORE.collect()[0].samples
-        count_before = sum(
-            s.value for s in before if s.name == "prediction_score_count"
-        )
+        count_before = sum(s.value for s in before if s.name == "prediction_score_count")
 
         record_prediction(latency_s=0.01, score=0.33)
 
         after = PREDICTION_SCORE.collect()[0].samples
-        count_after = sum(
-            s.value for s in after if s.name == "prediction_score_count"
-        )
+        count_after = sum(s.value for s in after if s.name == "prediction_score_count")
         assert count_after == count_before + 1
 
 

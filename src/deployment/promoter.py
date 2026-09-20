@@ -46,8 +46,13 @@ def start_canary(model_name: str, version: int) -> None:
     """
     image_ref = f"{model_name}:{version}"
     cmd = [
-        "kubectl", "argo", "rollouts", "set", "image",
-        _ROLLOUT_NAME, f"credit-model={image_ref}",
+        "kubectl",
+        "argo",
+        "rollouts",
+        "set",
+        "image",
+        _ROLLOUT_NAME,
+        f"credit-model={image_ref}",
     ]
     logger.info("Starting canary rollout: %s", " ".join(cmd))
     subprocess.run(cmd, check=True, capture_output=True, text=True)

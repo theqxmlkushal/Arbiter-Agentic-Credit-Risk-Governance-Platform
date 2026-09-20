@@ -59,8 +59,6 @@ def decision_node(state: ArbiterState) -> ArbiterState:
     decision = mapping[verdict]
 
     state["decision"] = decision
-    state["reasoning_trace"].append(
-        f"Policy verdict '{verdict}' mapped to '{decision}'."
-    )
+    state["reasoning_trace"].append(f"Policy verdict '{verdict}' mapped to '{decision}'.")
     logger.info("Decision node: verdict=%s → decision=%s", verdict, decision)
     return state

@@ -66,9 +66,7 @@ def load_live_batch(since: datetime) -> pd.DataFrame:
     logger.warning(
         "load_live_batch called with since=%s but live source is not yet wired up.", since
     )
-    raise NotImplementedError(
-        "load_live_batch is a stub — connect a real data source in Phase 2."
-    )
+    raise NotImplementedError("load_live_batch is a stub — connect a real data source in Phase 2.")
 
 
 # ---------------------------------------------------------------------------

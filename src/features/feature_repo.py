@@ -62,4 +62,8 @@ credit_features_view = FeatureView(
     description="Core credit-risk features materialised from the offline Parquet store.",
 )
 
-logger.info("Feast feature definitions loaded: entity=%s, view=%s", applicant.name, credit_features_view.name)
+logger.info(
+    "Feast feature definitions loaded: entity=%s, view=%s",
+    applicant.name,
+    credit_features_view.name,
+)

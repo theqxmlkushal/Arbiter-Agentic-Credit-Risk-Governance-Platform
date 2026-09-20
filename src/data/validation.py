@@ -86,9 +86,7 @@ def validate_schema(df: pd.DataFrame, schema: dict[str, str]) -> ValidationResul
     if is_valid:
         logger.info("Schema validation PASSED for %d rows across %d columns.", len(df), len(schema))
     else:
-        logger.warning(
-            "Schema validation FAILED — %d rule(s) broken: %s", len(failed), failed
-        )
+        logger.warning("Schema validation FAILED — %d rule(s) broken: %s", len(failed), failed)
 
     return result
 

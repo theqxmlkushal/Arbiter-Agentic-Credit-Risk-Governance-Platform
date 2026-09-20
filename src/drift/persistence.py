@@ -39,9 +39,7 @@ def is_persistent_drift(
     persistent = all(r.dataset_drift for r in tail)
 
     if persistent:
-        logger.warning(
-            "Persistent drift detected across the last %d reports.", min_consecutive
-        )
+        logger.warning("Persistent drift detected across the last %d reports.", min_consecutive)
     else:
         logger.info("Drift is not persistent — retraining not triggered.")
 

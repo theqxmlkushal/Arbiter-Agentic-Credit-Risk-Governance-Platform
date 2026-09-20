@@ -116,7 +116,9 @@ class TestBuildArbiterGraph:
             final_state = graph.invoke(_make_state("pass"))
 
         assert final_state["decision"] == "promote"
-        assert final_state["rationale"] == "Promote — the candidate meets all governance thresholds."
+        assert (
+            final_state["rationale"] == "Promote — the candidate meets all governance thresholds."
+        )
         # reasoning_trace should have at least 2 entries (inspect + reason)
         assert len(final_state["reasoning_trace"]) >= 2
 

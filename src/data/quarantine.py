@@ -50,8 +50,7 @@ def quarantine_rows(
     """
     if df.empty:
         raise ValueError(
-            "quarantine_rows received an empty DataFrame — "
-            "there are no rows to quarantine."
+            "quarantine_rows received an empty DataFrame — there are no rows to quarantine."
         )
 
     target_dir = (quarantine_dir or _QUARANTINE_DIR).resolve()
@@ -68,9 +67,7 @@ def quarantine_rows(
     annotated["quarantined_at"] = now
 
     annotated.to_parquet(dest, index=False)
-    logger.info(
-        "Quarantined %d row(s) [reason=%r] → %s", len(df), reason, dest
-    )
+    logger.info("Quarantined %d row(s) [reason=%r] → %s", len(df), reason, dest)
 
     alert_on_quarantine(count=len(df), reason=reason)
     return dest

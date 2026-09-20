@@ -53,7 +53,7 @@ jobs:
         run: ruff check .
 
       - name: Ruff format check
-        run: ruff format --check .
+        run: ruff format --check src/ tests/
 
   # ─── 2. Typecheck ──────────────────────────────────────────────────────
   typecheck:

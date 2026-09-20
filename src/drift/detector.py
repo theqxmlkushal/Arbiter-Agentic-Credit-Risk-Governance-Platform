@@ -55,9 +55,7 @@ def detect_drift(reference: pd.DataFrame, current: pd.DataFrame) -> DriftReport:
     ]
     dataset_drift: bool = result.get("dataset_drift", False)
 
-    logger.info(
-        "Drift report: dataset_drift=%s, drifted_features=%s", dataset_drift, drifted
-    )
+    logger.info("Drift report: dataset_drift=%s, drifted_features=%s", dataset_drift, drifted)
 
     return DriftReport(
         drifted_features=drifted,

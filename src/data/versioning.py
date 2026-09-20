@@ -79,9 +79,7 @@ def snapshot_dataset(
 
     # Compute SHA-256 of the raw Parquet bytes for the audit log.
     sha256 = _sha256_file(dest)
-    logger.info(
-        "Snapshot complete — name=%r path=%s sha256=%s", name, dest, sha256
-    )
+    logger.info("Snapshot complete — name=%r path=%s sha256=%s", name, dest, sha256)
     return sha256
 
 

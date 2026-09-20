@@ -56,6 +56,4 @@ def transition_stage(
         version=version,
         stage=stage,
     )
-    logger.info(
-        "Transitioned model %s v%d → %s.", name, version, stage
-    )
+    logger.info("Transitioned model %s v%d → %s.", name, version, stage)

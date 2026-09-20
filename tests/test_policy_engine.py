@@ -18,7 +18,9 @@ from src.governance.evidence import EvidenceBundle, compile_evidence
 from src.governance.policy_engine import evaluate_policy, load_policy
 from src.validation.report import ValidationReport
 
-POLICY_PATH = str(Path(__file__).resolve().parent.parent / "src" / "governance" / "rules" / "credit_policy.yaml")
+POLICY_PATH = str(
+    Path(__file__).resolve().parent.parent / "src" / "governance" / "rules" / "credit_policy.yaml"
+)
 
 
 # ============================================================================

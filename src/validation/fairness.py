@@ -29,16 +29,12 @@ def compute_fairness(
         Dict with ``"demographic_parity_difference"`` and
         ``"equalized_odds_difference"``.
     """
-    dpd = float(demographic_parity_difference(
-        y_true, y_pred, sensitive_features=sensitive_features
-    ))
-    eod = float(equalized_odds_difference(
-        y_true, y_pred, sensitive_features=sensitive_features
-    ))
-
-    logger.info(
-        "Fairness — dpd=%.4f, eod=%.4f", dpd, eod
+    dpd = float(
+        demographic_parity_difference(y_true, y_pred, sensitive_features=sensitive_features)
     )
+    eod = float(equalized_odds_difference(y_true, y_pred, sensitive_features=sensitive_features))
+
+    logger.info("Fairness — dpd=%.4f, eod=%.4f", dpd, eod)
     return {
         "demographic_parity_difference": dpd,
         "equalized_odds_difference": eod,

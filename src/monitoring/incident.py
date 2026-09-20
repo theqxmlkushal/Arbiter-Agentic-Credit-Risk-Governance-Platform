@@ -24,9 +24,8 @@ def handle_alert(alert_payload: dict) -> None:
                        ``alert_payload["labels"]``.
     """
     # Alertmanager v2 payloads nest labels inside the alert object.
-    alertname = (
-        alert_payload.get("alertname")
-        or alert_payload.get("labels", {}).get("alertname", "")
+    alertname = alert_payload.get("alertname") or alert_payload.get("labels", {}).get(
+        "alertname", ""
     )
 
     if alertname in _ROLLBACK_ALERTS:
