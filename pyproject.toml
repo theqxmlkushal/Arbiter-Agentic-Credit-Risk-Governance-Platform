@@ -58,3 +58,18 @@ module = [
     "lightgbm.*",
 ]
 ignore_missing_imports = true
+
+# ── Pytest ──────────────────────────────────────────────────────────────────
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+filterwarnings = [
+    # langgraph/langchain internals — pending deprecation in allowed_objects default
+    "ignore:.*allowed_objects.*:Warning",
+    # Prefect wraps user flows into internal Pydantic models; the field name
+    # "schema" shadows a parent attribute — harmless and outside our control.
+    "ignore:Field name .schema. in .* shadows an attribute:UserWarning",
+    # FastAPI TestClient uses httpx; Starlette plans to swap to httpx2.
+    "ignore:.*httpx.*starlette.testclient.*:UserWarning",
+    # pytest_asyncio calls asyncio.get_event_loop() which is deprecated in 3.10+
+    "ignore:.*no current event loop.*:DeprecationWarning",
+]

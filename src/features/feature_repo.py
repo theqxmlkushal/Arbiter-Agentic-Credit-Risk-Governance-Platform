@@ -20,6 +20,7 @@ from datetime import timedelta
 
 from feast import Entity, FeatureView, Field, FileSource  # type: ignore[import-untyped]
 from feast.types import Float32, Int32  # type: ignore[import-untyped]
+from feast.value_type import ValueType  # type: ignore[import-untyped]
 
 logger = logging.getLogger(__name__)
 
@@ -30,6 +31,7 @@ logger = logging.getLogger(__name__)
 applicant = Entity(
     name="applicant_id",
     join_keys=["applicant_id"],
+    value_type=ValueType.STRING,
     description="Unique identifier for a loan applicant.",
 )
 
