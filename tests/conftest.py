@@ -33,30 +33,63 @@ except Exception:
 
 
 # ── Module-level filters (supplement for other third-party warnings) ────────
+
+# FastAPI / httpx / Starlette interop
 warnings.filterwarnings("ignore", category=UserWarning, message=".*httpx.*starlette.*")
+warnings.filterwarnings("ignore", category=DeprecationWarning, message=".*httpx.*starlette.*")
+
+# asyncio event loop (Python 3.10+)
 warnings.filterwarnings("ignore", category=DeprecationWarning, message=".*no current event loop.*")
+
+# Pydantic v1 → v2 migration warnings from third-party libs (mlflow, etc.)
 warnings.filterwarnings(
-    "ignore", category=UserWarning, message="Field name .schema. in .* shadows an attribute"
+    "ignore", category=DeprecationWarning, message=".*@validator.*deprecated.*"
 )
-# Pydantic V1-style @validator in mlflow.gateway.config
-warnings.filterwarnings("ignore", category=DeprecationWarning, message=".*@validator.*deprecated.*")
 warnings.filterwarnings(
     "ignore", category=DeprecationWarning, message=".*@root_validator.*deprecated.*"
 )
 warnings.filterwarnings(
     "ignore", category=DeprecationWarning, message=".*class-based.*config.*deprecated.*"
 )
-# mlflow model registry stages
+warnings.filterwarnings(
+    "ignore", category=DeprecationWarning, message=".*Support for class-based.*config.*"
+)
+# Pydantic V2 deprecation in mlflow gateway
+warnings.filterwarnings(
+    "ignore", category=DeprecationWarning, message=".*Pydantic V1 style.*validators are deprecated.*"
+)
+warnings.filterwarnings(
+    "ignore", category=DeprecationWarning, message=".*PydanticDeprecatedSince20.*"
+)
+
+# Prefect wraps user flows into internal Pydantic models
+warnings.filterwarnings(
+    "ignore", category=UserWarning, message="Field name .schema. in .* shadows an attribute"
+)
+
+# MLflow model registry stages deprecation
 warnings.filterwarnings(
     "ignore", category=FutureWarning, message=".*get_latest_versions.*deprecated.*"
 )
-# fairlearn groupby.apply
+warnings.filterwarnings(
+    "ignore", category=FutureWarning, message=".*MlflowClient.get_latest_versions.*"
+)
+
+# fairlearn: DataFrameGroupBy.apply deprecation (pandas 2.x)
 warnings.filterwarnings(
     "ignore", category=DeprecationWarning, message=".*DataFrameGroupBy\\.apply.*"
 )
-# supabase gotrue
+
+# supabase gotrue package renamed to supabase_auth
 warnings.filterwarnings("ignore", category=DeprecationWarning, message=".*gotrue.*deprecated.*")
-# anyio BlockingPortal alias
+warnings.filterwarnings(
+    "ignore", category=DeprecationWarning, message=".*`gotrue` package is deprecated.*"
+)
+
+# anyio BlockingPortal alias (starlette TestClient)
 warnings.filterwarnings(
     "ignore", category=DeprecationWarning, message=".*BlockingPortal.*deprecated.*"
+)
+warnings.filterwarnings(
+    "ignore", category=DeprecationWarning, message=".*anyio.abc.BlockingPortal.*"
 )
