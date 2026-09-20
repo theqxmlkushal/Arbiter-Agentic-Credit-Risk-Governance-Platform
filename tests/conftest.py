@@ -42,9 +42,7 @@ warnings.filterwarnings("ignore", category=DeprecationWarning, message=".*httpx.
 warnings.filterwarnings("ignore", category=DeprecationWarning, message=".*no current event loop.*")
 
 # Pydantic v1 → v2 migration warnings from third-party libs (mlflow, etc.)
-warnings.filterwarnings(
-    "ignore", category=DeprecationWarning, message=".*@validator.*deprecated.*"
-)
+warnings.filterwarnings("ignore", category=DeprecationWarning, message=".*@validator.*deprecated.*")
 warnings.filterwarnings(
     "ignore", category=DeprecationWarning, message=".*@root_validator.*deprecated.*"
 )
@@ -56,7 +54,9 @@ warnings.filterwarnings(
 )
 # Pydantic V2 deprecation in mlflow gateway
 warnings.filterwarnings(
-    "ignore", category=DeprecationWarning, message=".*Pydantic V1 style.*validators are deprecated.*"
+    "ignore",
+    category=DeprecationWarning,
+    message=".*Pydantic V1 style.*validators are deprecated.*",
 )
 warnings.filterwarnings(
     "ignore", category=DeprecationWarning, message=".*PydanticDeprecatedSince20.*"

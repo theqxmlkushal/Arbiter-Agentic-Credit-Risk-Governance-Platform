@@ -92,9 +92,9 @@ class TestCIJobGraph:
         ci = _load_ci()
         build_job = ci["jobs"]["build"]
         if_str = build_job.get("if", "")
-        assert "main" in if_str, (
-            f"build job 'if' condition should gate on main branch, got: {if_str}"
-        )
+        assert (
+            "main" in if_str
+        ), f"build job 'if' condition should gate on main branch, got: {if_str}"
 
     def test_ci_triggers_on_push_and_pr(self) -> None:
         ci = _load_ci()
@@ -116,9 +116,9 @@ class TestCIBuildImages:
             for s in steps
             if s.get("name", "").lower().startswith("build")
         ]
-        assert any("Dockerfile.api" in ref for ref in dockerfile_refs), (
-            f"No step references Dockerfile.api: {dockerfile_refs}"
-        )
+        assert any(
+            "Dockerfile.api" in ref for ref in dockerfile_refs
+        ), f"No step references Dockerfile.api: {dockerfile_refs}"
 
     def test_build_references_dockerfile_worker(self) -> None:
         ci = _load_ci()
@@ -128,9 +128,9 @@ class TestCIBuildImages:
             for s in steps
             if s.get("name", "").lower().startswith("build")
         ]
-        assert any("Dockerfile.worker" in ref for ref in dockerfile_refs), (
-            f"No step references Dockerfile.worker: {dockerfile_refs}"
-        )
+        assert any(
+            "Dockerfile.worker" in ref for ref in dockerfile_refs
+        ), f"No step references Dockerfile.worker: {dockerfile_refs}"
 
     def test_build_pushes_to_ghcr(self) -> None:
         ci = _load_ci()
@@ -150,17 +150,17 @@ class TestCDWorkflow:
         on_block = cd.get("on") or cd.get(True)
         push_config = on_block.get("push", {})
         tags = push_config.get("tags", [])
-        assert any("v*" in t for t in tags), (
-            f"CD should trigger on semver tags (v*.*.*), got tags: {tags}"
-        )
+        assert any(
+            "v*" in t for t in tags
+        ), f"CD should trigger on semver tags (v*.*.*), got tags: {tags}"
 
     def test_cd_has_kubeconfig_step(self) -> None:
         cd = _load_cd()
         deploy_job = cd["jobs"]["deploy"]
         step_names = [s.get("name", "") for s in deploy_job["steps"]]
-        assert any("kubeconfig" in n.lower() for n in step_names), (
-            f"No kubeconfig step found: {step_names}"
-        )
+        assert any(
+            "kubeconfig" in n.lower() for n in step_names
+        ), f"No kubeconfig step found: {step_names}"
 
     def test_cd_applies_k8s_base(self) -> None:
         cd = _load_cd()
@@ -172,17 +172,17 @@ class TestCDWorkflow:
         cd = _load_cd()
         deploy_job = cd["jobs"]["deploy"]
         all_commands = " ".join(str(s) for s in deploy_job["steps"])
-        assert "argo rollouts set image" in all_commands, (
-            "CD should run 'kubectl argo rollouts set image'"
-        )
+        assert (
+            "argo rollouts set image" in all_commands
+        ), "CD should run 'kubectl argo rollouts set image'"
 
     def test_cd_waits_for_rollout_status(self) -> None:
         cd = _load_cd()
         deploy_job = cd["jobs"]["deploy"]
         all_commands = " ".join(str(s) for s in deploy_job["steps"])
-        assert "argo rollouts status" in all_commands, (
-            "CD should run 'kubectl argo rollouts status'"
-        )
+        assert (
+            "argo rollouts status" in all_commands
+        ), "CD should run 'kubectl argo rollouts status'"
 
     def test_cd_has_rollback_on_failure(self) -> None:
         cd = _load_cd()
@@ -204,9 +204,9 @@ class TestSecretsDocumented:
     def test_ci_documents_ghcr_token(self) -> None:
         ci = _load_ci()
         full_text = str(ci)
-        assert "GHCR_TOKEN" in full_text or "GITHUB_TOKEN" in full_text, (
-            "CI should reference GHCR_TOKEN or GITHUB_TOKEN"
-        )
+        assert (
+            "GHCR_TOKEN" in full_text or "GITHUB_TOKEN" in full_text
+        ), "CI should reference GHCR_TOKEN or GITHUB_TOKEN"
 
     def test_cd_documents_kube_config(self) -> None:
         cd = _load_cd()
