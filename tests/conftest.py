@@ -4,10 +4,35 @@ from __future__ import annotations
 
 import warnings
 
-# Suppress third-party warnings that fire at import time before pytest's
-# own warning plugin sets up its catch_warnings context.  These are harmless
-# deprecation notices from transitive dependencies we don't control.
-warnings.filterwarnings("ignore", category=Warning, message=".*allowed_objects.*")
+# ── Suppress import-time warnings from transitive dependencies ──────────────
+# The LangChainPendingDeprecationWarning fires inside
+# langchain_core.load.load.Reviver.__init__ when called with
+# allowed_objects=None (the default).  This happens at module-import time
+# when jsonplus.py instantiates ``LC_REVIVER = Reviver()`` — BEFORE pytest's
+# own ``catch_warnings`` context is active during test collection, so normal
+# ``filterwarnings`` config cannot intercept it.
+
+_original_warn_deprecated = None
+
+
+def _suppress_langchain_import_warning(*args, **kwargs):
+    """Silence the ``allowed_objects`` PendingDeprecationWarning from langchain_core."""
+    msg = kwargs.get("message", args[1] if len(args) > 1 else "")
+    if isinstance(msg, str) and "allowed_objects" in msg:
+        return  # swallow — we know about this pending deprecation
+    return _original_warn_deprecated(*args, **kwargs)
+
+
+try:
+    import langchain_core._api.deprecation as _dep_mod
+
+    _original_warn_deprecated = _dep_mod.warn_deprecated
+    _dep_mod.warn_deprecated = _suppress_langchain_import_warning
+except Exception:
+    pass  # langchain_core not installed — nothing to patch
+
+
+# ── Module-level filters (supplement for other third-party warnings) ────────
 warnings.filterwarnings("ignore", category=UserWarning, message=".*httpx.*starlette.*")
 warnings.filterwarnings("ignore", category=DeprecationWarning, message=".*no current event loop.*")
 warnings.filterwarnings(

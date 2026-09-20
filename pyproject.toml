@@ -62,9 +62,9 @@ ignore_missing_imports = true
 # ── Pytest ──────────────────────────────────────────────────────────────────
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+# Note: most filterwarnings are injected via conftest.py pytest_configure()
+# because they need to survive pytest's catch_warnings context during collection.
 filterwarnings = [
-    # langgraph/langchain internals — pending deprecation in allowed_objects default
-    "ignore::PendingDeprecationWarning",
     # Prefect wraps user flows into internal Pydantic models; the field name
     # "schema" shadows a parent attribute — harmless and outside our control.
     "ignore:Field name .schema. in .* shadows an attribute:UserWarning",
