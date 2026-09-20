@@ -1,0 +1,25 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# requirements-typecheck.txt  —  minimal install for the mypy CI job
+#
+# With ignore_missing_imports = true, mypy silently skips any package not
+# installed.  We only need packages whose inline types mypy actively uses.
+# ──────────────────────────────────────────────────────────────────────────────
+
+# Core types used across src/
+pydantic==2.10.3
+pydantic-settings==2.6.1
+fastapi==0.115.5
+starlette>=0.40.0,<0.42.0
+anyio>=4.0
+
+# Data layer
+pandas==2.2.3
+numpy>=1.26,<3
+pyarrow==18.1.0
+
+# Observability (prometheus types used in src/monitoring/)
+prometheus-client==0.21.1
+
+# Dev tools
+typing-extensions>=4.8
+mypy==1.13.0
