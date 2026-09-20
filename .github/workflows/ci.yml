@@ -3,6 +3,14 @@
 #
 # Job graph:  lint → typecheck → test → build (main only)
 #
+# Dependency strategy:
+#   lint         — ruff only (no project deps needed)
+#   typecheck    — requirements-typecheck.txt (minimal; mypy ignore_missing_imports
+#                  covers everything else)
+#   test         — requirements-ci.txt (full test deps minus feast/dvc/redis which
+#                  are mocked; avoids boto3/fsspec conflict from feast+dvc together)
+#   build        — no Python deps (Docker build only)
+#
 # Required GitHub Actions secrets:
 #   GITHUB_TOKEN — built-in; used to push images to ghcr.io (packages: write).
 # ──────────────────────────────────────────────────────────────────────────────
@@ -24,6 +32,9 @@ env:
   REGISTRY: ghcr.io
   IMAGE_API: ghcr.io/${{ github.repository_owner }}/arbiter-api
   IMAGE_WORKER: ghcr.io/${{ github.repository_owner }}/arbiter-worker
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+  PIP_NO_COLOR: "1"
+  PIP_QUIET: "1"
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -67,7 +78,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r requirements-typecheck.txt
 
       - name: Run mypy
         run: mypy src/
@@ -96,7 +107,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r requirements-ci.txt
 
       - name: Run tests
         run: pytest tests/ -v --tb=short -W default
