@@ -53,11 +53,19 @@ jobs:
 
       # ── 2. Authenticate to Kubernetes ──────────────────────────────────
       - name: Set up kubeconfig
+        shell: bash
         run: |
-          mkdir -p $HOME/.kube
-          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > $HOME/.kube/config
-          chmod 600 $HOME/.kube/config
-          echo "Kubeconfig written — cluster info:"
+          set -euo pipefail
+
+          mkdir -p "$HOME/.kube"
+          printf '%s' '${{ secrets.KUBE_CONFIG }}' | base64 --decode > "$HOME/.kube/config"
+          chmod 600 "$HOME/.kube/config"
+
+          if grep -Eq 'C:\\\\|/Users/|certificate-authority:|client-certificate:|client-key:' "$HOME/.kube/config"; then
+            echo "Kubeconfig contains host-local certificate paths."
+            exit 1
+          fi
+
           kubectl cluster-info
 
       # ── 3. Install CLI tools ──────────────────────────────────────────
@@ -67,11 +75,21 @@ jobs:
           version: "v1.30.0"
 
       - name: Install Argo Rollouts kubectl plugin
+        id: argo-plugin
+        shell: bash
         run: |
-          curl -LO https://github.com/argoproj/argo-rollouts/releases/latest/download/kubectl-argo-rollouts-linux-amd64
-          chmod +x kubectl-argo-rollouts-linux-amd64
-          sudo mv kubectl-argo-rollouts-linux-amd64 /usr/local/bin/kubectl-argo-rollouts
-          kubectl argo rollouts version
+          set -euo pipefail
+
+          version="v1.8.3"
+          curl --fail --location --retry 3 \
+            -o /tmp/kubectl-argo-rollouts \
+            "https://github.com/argoproj/argo-rollouts/releases/download/${version}/kubectl-argo-rollouts-linux-amd64"
+
+          install -m 0755 /tmp/kubectl-argo-rollouts \
+            "$HOME/.local/bin/kubectl-argo-rollouts"
+
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          "$HOME/.local/bin/kubectl-argo-rollouts version"
 
       # ── 4. Apply base manifests ────────────────────────────────────────
       - name: Apply K8s base manifests
@@ -84,6 +102,7 @@ jobs:
 
       # ── 5. Patch Argo Rollout with new image ──────────────────────────
       - name: Set rollout image to ${{ github.ref_name }}
+        id: set-image
         run: |
           IMAGE_REF="${{ env.IMAGE_API }}:${{ github.ref_name }}"
           echo "Patching Argo Rollout: ${ARGO_ROLLOUT} → credit-model=${IMAGE_REF}"
@@ -92,6 +111,7 @@ jobs:
 
       # ── 6. Wait for rollout to stabilise ──────────────────────────────
       - name: Wait for rollout health
+        id: rollout-status
         run: |
           echo "Waiting for rollout to complete (timeout=${ROLLOUT_TIMEOUT}) …"
           kubectl argo rollouts status "${ARGO_ROLLOUT}" \
@@ -101,8 +121,14 @@ jobs:
 
       # ── 7. Rollback on failure ────────────────────────────────────────
       - name: Rollback if rollout failed
-        if: failure()
+        if: >
+          failure() &&
+          (steps.set-image.outcome == 'failure' ||
+           steps.rollout-status.outcome == 'failure')
+        shell: bash
         run: |
+          set -euo pipefail
+
           echo "Rollout failed — triggering rollback to last stable revision …"
           kubectl argo rollouts undo "${ARGO_ROLLOUT}"
           kubectl argo rollouts status "${ARGO_ROLLOUT}" \
