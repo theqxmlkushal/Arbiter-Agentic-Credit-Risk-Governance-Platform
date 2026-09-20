@@ -77,13 +77,21 @@ class TestCheckLeakage:
 
 class TestTrainCandidate:
     def test_produces_mlflow_run(self, tmp_path: object) -> None:
+        from unittest.mock import MagicMock
         from src.training.trainer import train_candidate
 
         rng = np.random.RandomState(42)
         X = rng.rand(100, 4)
         y = (X[:, 0] > 0.5).astype(int)
 
-        with patch("mlflow.set_tracking_uri"):
+        mock_run = MagicMock()
+        mock_run.info.run_id = "fake-run-id-12345"
+
+        with patch("mlflow.set_tracking_uri"), \
+             patch("mlflow.start_run", return_value=MagicMock(__enter__=MagicMock(return_value=mock_run), __exit__=MagicMock(return_value=False))), \
+             patch("mlflow.log_params"), \
+             patch("mlflow.log_metric"), \
+             patch("mlflow.sklearn.log_model"):
             run_id = train_candidate(
                 "logistic_regression",
                 X,
@@ -93,7 +101,7 @@ class TestTrainCandidate:
             )
 
         assert isinstance(run_id, str)
-        assert len(run_id) > 0
+        assert run_id == "fake-run-id-12345"
 
 
 # ============================================================================
