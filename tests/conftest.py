@@ -38,3 +38,25 @@ warnings.filterwarnings("ignore", category=DeprecationWarning, message=".*no cur
 warnings.filterwarnings(
     "ignore", category=UserWarning, message="Field name .schema. in .* shadows an attribute"
 )
+# Pydantic V1-style @validator in mlflow.gateway.config
+warnings.filterwarnings("ignore", category=DeprecationWarning, message=".*@validator.*deprecated.*")
+warnings.filterwarnings(
+    "ignore", category=DeprecationWarning, message=".*@root_validator.*deprecated.*"
+)
+warnings.filterwarnings(
+    "ignore", category=DeprecationWarning, message=".*class-based.*config.*deprecated.*"
+)
+# mlflow model registry stages
+warnings.filterwarnings(
+    "ignore", category=FutureWarning, message=".*get_latest_versions.*deprecated.*"
+)
+# fairlearn groupby.apply
+warnings.filterwarnings(
+    "ignore", category=DeprecationWarning, message=".*DataFrameGroupBy\\.apply.*"
+)
+# supabase gotrue
+warnings.filterwarnings("ignore", category=DeprecationWarning, message=".*gotrue.*deprecated.*")
+# anyio BlockingPortal alias
+warnings.filterwarnings(
+    "ignore", category=DeprecationWarning, message=".*BlockingPortal.*deprecated.*"
+)

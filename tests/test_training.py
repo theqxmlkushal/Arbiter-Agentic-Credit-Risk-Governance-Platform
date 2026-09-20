@@ -78,6 +78,7 @@ class TestCheckLeakage:
 class TestTrainCandidate:
     def test_produces_mlflow_run(self, tmp_path: object) -> None:
         from unittest.mock import MagicMock
+
         from src.training import trainer as _trainer_mod
 
         rng = np.random.RandomState(42)

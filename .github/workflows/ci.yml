@@ -72,7 +72,6 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
-          pip install mypy
 
       - name: Run mypy
         run: mypy src/
@@ -94,10 +93,9 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest
 
       - name: Run tests
-        run: pytest tests/ -v --tb=short
+        run: pytest tests/ -v --tb=short -W default
 
   # ─── 4. Build & Push (main branch only) ────────────────────────────────
   build:
