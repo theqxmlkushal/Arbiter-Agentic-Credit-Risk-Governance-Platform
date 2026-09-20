@@ -2,8 +2,8 @@
 # Arbiter CD Pipeline — Deploy on tag push
 #
 # Triggered when a semver tag (v*.*.*) is pushed.  The workflow:
-#   1. Checks out the repo at the tagged commit.
-#   2. Authenticates to the target Kubernetes cluster via a kubeconfig secret.
+#   1. Checks for the KUBE_CONFIG secret (gracefully skips if missing).
+#   2. Authenticates to the target Kubernetes cluster.
 #   3. Applies the base K8s manifests (Deployments, Service, HPA).
 #   4. Patches the Argo Rollout CR to point at the new image tag.
 #   5. Waits for the rollout to stabilise (auto-aborts on error rate).
@@ -11,9 +11,7 @@
 # Required GitHub Actions secrets:
 #   KUBE_CONFIG — Base64-encoded kubeconfig for the target cluster.
 #                 Generate with:  cat ~/.kube/config | base64 -w 0
-#   GHCR_TOKEN  — (optional) PAT for pulling ghcr.io images in a private
-#                 registry.  If the cluster uses imagePullSecrets backed by
-#                 GITHUB_TOKEN, this secret is not needed here.
+#                 If not set, the job is skipped with a clear warning.
 #
 # The rollout image command uses the GitHub org from the repository context:
 #   ghcr.io/<owner>/arbiter-api:<tag>
@@ -42,8 +40,31 @@ concurrency:
 
 # ── Jobs ────────────────────────────────────────────────────────────────────
 jobs:
+  # ── Pre-flight: check whether the KUBE_CONFIG secret exists ─────────────
+  precheck:
+    name: Check deployment readiness
+    runs-on: ubuntu-latest
+    outputs:
+      has_kubeconfig: ${{ steps.check.outputs.has_config }}
+    steps:
+      - name: Detect KUBE_CONFIG secret
+        id: check
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+        run: |
+          if [ -n "$KUBE_CONFIG" ]; then
+            echo "has_config=true" >> "$GITHUB_OUTPUT"
+            echo "✅ KUBE_CONFIG secret is set — deployment will proceed."
+          else
+            echo "has_config=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::KUBE_CONFIG secret is not set — deployment will be skipped."
+          fi
+
+  # ── Deploy ─────────────────────────────────────────────────────────────
   deploy:
     name: Deploy to Kubernetes
+    needs: [precheck]
+    if: needs.precheck.outputs.has_kubeconfig == 'true'
     runs-on: ubuntu-latest
     environment: production           # requires environment approval in GitHub
     steps:
@@ -54,11 +75,13 @@ jobs:
       # ── 2. Authenticate to Kubernetes ──────────────────────────────────
       - name: Set up kubeconfig
         shell: bash
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
         run: |
           set -euo pipefail
 
           mkdir -p "$HOME/.kube"
-          printf '%s' '${{ secrets.KUBE_CONFIG }}' | base64 --decode > "$HOME/.kube/config"
+          printf '%s' "$KUBE_CONFIG" | base64 --decode > "$HOME/.kube/config"
           chmod 600 "$HOME/.kube/config"
 
           if grep -Eq 'C:\\\\|/Users/|certificate-authority:|client-certificate:|client-key:' "$HOME/.kube/config"; then
