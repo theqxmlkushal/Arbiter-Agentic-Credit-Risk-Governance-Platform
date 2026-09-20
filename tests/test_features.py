@@ -127,6 +127,8 @@ class TestOnlineStoreCache:
 class TestFeatureRepoImport:
     def test_import_feature_repo_no_errors(self) -> None:
         """Importing the module should not raise."""
+        feast = pytest.importorskip("feast")  # noqa: F841 — not installed in CI
+
         import src.features.feature_repo as fr  # noqa: F401
 
         assert fr.applicant.name == "applicant_id"
