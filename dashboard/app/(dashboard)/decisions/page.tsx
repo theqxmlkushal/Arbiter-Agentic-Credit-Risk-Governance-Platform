@@ -45,10 +45,10 @@ export default function DecisionsPage() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="p-6 lg:p-8 max-w-[1400px] mx-auto space-y-8"
+      className="p-6 lg:p-8 max-w-[1400px] mx-auto space-y-6"
     >
-      {/* ── Page Header ────────────────────────────────────────── */}
-      <div>
+      {/* Page Header */}
+      <div className="pb-2">
         <motion.h1
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -64,7 +64,7 @@ export default function DecisionsPage() {
         </p>
       </div>
 
-      {/* ── Stats Cards ────────────────────────────────────────── */}
+      {/* Stats Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {STAT_CARDS.map(({ label, value, icon: Icon, color, bg }, i) => (
           <motion.div
@@ -74,28 +74,16 @@ export default function DecisionsPage() {
             transition={{ delay: i * 0.07, duration: 0.3 }}
             whileHover={{ y: -3, scale: 1.02 }}
             className="rounded-xl p-5 flex items-center gap-4 transition-all duration-200"
-            style={{
-              background: "var(--card-bg)",
-              border: "1px solid var(--card-border)",
-            }}
+            style={{ background: "var(--card-bg)", border: "1px solid var(--card-border)" }}
           >
-            <div
-              className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-              style={{ background: bg }}
-            >
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: bg }}>
               <Icon className="w-6 h-6" style={{ color }} />
             </div>
             <div className="min-w-0">
-              <p
-                className="text-2xl font-bold font-mono leading-none"
-                style={{ color }}
-              >
+              <p className="text-2xl font-bold font-mono leading-none" style={{ color }}>
                 {value}
               </p>
-              <p
-                className="text-xs mt-1.5 truncate"
-                style={{ color: "var(--text-muted)" }}
-              >
+              <p className="text-xs mt-1.5 truncate" style={{ color: "var(--text-muted)" }}>
                 {label}
               </p>
             </div>
@@ -103,31 +91,14 @@ export default function DecisionsPage() {
         ))}
       </div>
 
-      {/* ── Table Card ─────────────────────────────────────────── */}
+      {/* Table Card */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.25 }}
         className="rounded-xl overflow-hidden"
-        style={{
-          background: "var(--card-bg)",
-          border: "1px solid var(--card-border)",
-        }}
+        style={{ background: "var(--card-bg)", border: "1px solid var(--card-border)" }}
       >
-        <div
-          className="px-6 py-4"
-          style={{ borderBottom: "1px solid var(--border-color)" }}
-        >
-          <h2
-            className="text-sm font-semibold"
-            style={{ color: "var(--text-primary)" }}
-          >
-            Audit Log
-          </h2>
-          <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
-            Click any row to view the full evidence bundle
-          </p>
-        </div>
         <DecisionsTable data={MOCK_AUDIT_LOG} />
       </motion.div>
     </motion.div>

@@ -58,25 +58,19 @@ export function DecisionsTable({ data }: { data: AuditLogEntry[] }) {
   return (
     <>
       {/* ── Toolbar ──────────────────────────────────────────── */}
-      <div
-        className="px-6 py-4 space-y-3"
-        style={{ borderBottom: "1px solid var(--border-color)" }}
-      >
+      <div className="px-6 py-5 space-y-4" style={{ borderBottom: "1px solid var(--border-color)" }}>
         {/* Search row */}
-        <div className="relative max-w-md">
+        <div className="relative max-w-lg">
           <Search
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4"
             style={{ color: "var(--text-muted)" }}
           />
           <input
             type="text"
             value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setPage(0);
-            }}
+            onChange={(e) => { setSearch(e.target.value); setPage(0); }}
             placeholder="Search by model, version, or rationale..."
-            className="w-full pl-10 pr-10 py-2.5 rounded-lg text-sm outline-none transition-all duration-200 placeholder:text-slate-400"
+            className="w-full pl-11 pr-10 py-2.5 rounded-lg text-sm outline-none transition-all duration-200"
             style={{
               background: "var(--input-bg)",
               color: "var(--text-primary)",
@@ -85,10 +79,7 @@ export function DecisionsTable({ data }: { data: AuditLogEntry[] }) {
           />
           {search && (
             <button
-              onClick={() => {
-                setSearch("");
-                setPage(0);
-              }}
+              onClick={() => { setSearch(""); setPage(0); }}
               className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full flex items-center justify-center hover:opacity-70 transition-opacity"
               style={{ color: "var(--text-muted)" }}
             >
@@ -97,32 +88,28 @@ export function DecisionsTable({ data }: { data: AuditLogEntry[] }) {
           )}
         </div>
 
-        {/* Filter pills + result count */}
-        <div className="flex items-center gap-3 flex-wrap">
-          {FILTERS.map(({ key, label }) => {
-            const active = filter === key;
-            return (
-              <button
-                key={key}
-                onClick={() => {
-                  setFilter(key);
-                  setPage(0);
-                }}
-                className="px-3 py-1 rounded-full text-xs font-medium transition-all duration-150"
-                style={{
-                  background: active ? "var(--accent)" : "transparent",
-                  color: active ? "white" : "var(--text-muted)",
-                  border: `1px solid ${active ? "var(--accent)" : "var(--border-strong)"}`,
-                }}
-              >
-                {label}
-              </button>
-            );
-          })}
-          <span
-            className="ml-auto text-sm pl-2"
-            style={{ color: "var(--text-muted)" }}
-          >
+        {/* Filter row: pills left, count right */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            {FILTERS.map(({ key, label }) => {
+              const active = filter === key;
+              return (
+                <button
+                  key={key}
+                  onClick={() => { setFilter(key); setPage(0); }}
+                  className="px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-150"
+                  style={{
+                    background: active ? "var(--accent)" : "rgba(255,255,255,0.06)",
+                    color: active ? "white" : "var(--text-muted)",
+                    border: active ? "none" : "1px solid rgba(255,255,255,0.1)",
+                  }}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+          <span className="text-xs" style={{ color: "var(--text-muted)" }}>
             {filtered.length} result{filtered.length !== 1 ? "s" : ""}
           </span>
         </div>
@@ -130,10 +117,7 @@ export function DecisionsTable({ data }: { data: AuditLogEntry[] }) {
 
       {/* ── Table ─────────────────────────────────────────────── */}
       <div className="overflow-x-auto">
-        <table
-          className="w-full"
-          style={{ borderCollapse: "separate", borderSpacing: 0 }}
-        >
+        <table className="w-full" style={{ borderCollapse: "separate", borderSpacing: 0 }}>
           <thead>
             <tr>
               {[
@@ -156,21 +140,13 @@ export function DecisionsTable({ data }: { data: AuditLogEntry[] }) {
                 >
                   {sortable ? (
                     <button
-                      onClick={() =>
-                        setSortDir(sortDir === "desc" ? "asc" : "desc")
-                      }
+                      onClick={() => setSortDir(sortDir === "desc" ? "asc" : "desc")}
                       className="flex items-center gap-1 hover:opacity-70 transition-opacity"
                     >
                       {label}
-                      {sortDir === "desc" ? (
-                        <ChevronDown className="w-3 h-3" />
-                      ) : (
-                        <ChevronUp className="w-3 h-3" />
-                      )}
+                      {sortDir === "desc" ? <ChevronDown className="w-3 h-3" /> : <ChevronUp className="w-3 h-3" />}
                     </button>
-                  ) : (
-                    label
-                  )}
+                  ) : label}
                 </th>
               ))}
             </tr>
@@ -185,77 +161,34 @@ export function DecisionsTable({ data }: { data: AuditLogEntry[] }) {
                   transition={{ delay: i * 0.03, duration: 0.2 }}
                   className="group cursor-pointer transition-colors duration-100"
                   style={{ borderBottom: "1px solid var(--border-color)" }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "var(--surface-raised)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = "transparent";
-                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = "var(--surface-raised)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
                   onClick={() => setSelectedEntry(entry)}
                 >
-                  {/* Time */}
-                  <td
-                    className="whitespace-nowrap text-sm"
-                    style={{
-                      padding: "14px 16px",
-                      color: "var(--text-secondary)",
-                    }}
-                  >
-                    {new Date(entry.created_at).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    })}
+                  <td className="whitespace-nowrap text-sm" style={{ padding: "14px 16px", color: "var(--text-secondary)" }}>
+                    {new Date(entry.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                   </td>
-
-                  {/* Model */}
                   <td style={{ padding: "14px 16px" }}>
-                    <span
-                      className="text-sm font-medium font-mono"
-                      style={{ color: "var(--text-primary)" }}
-                    >
+                    <span className="text-sm font-medium font-mono" style={{ color: "var(--text-primary)" }}>
                       {entry.model_name}
                     </span>
                   </td>
-
-                  {/* Version */}
                   <td style={{ padding: "14px 16px" }}>
-                    <span
-                      className="inline-flex items-center justify-center w-8 h-8 rounded-lg text-xs font-bold"
-                      style={{
-                        background: "var(--accent-muted)",
-                        color: "var(--accent)",
-                      }}
-                    >
+                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg text-xs font-bold" style={{ background: "var(--accent-muted)", color: "var(--accent)" }}>
                       {entry.model_version}
                     </span>
                   </td>
-
-                  {/* Decision */}
                   <td style={{ padding: "14px 16px" }}>
                     <DecisionBadge decision={entry.decision} />
                   </td>
-
-                  {/* Rationale */}
-                  <td
-                    className="hidden md:table-cell"
-                    style={{ padding: "14px 16px" }}
-                  >
-                    <p
-                      className="text-sm leading-relaxed max-w-xl line-clamp-2"
-                      style={{ color: "var(--text-secondary)" }}
-                    >
+                  <td className="hidden md:table-cell" style={{ padding: "14px 16px" }}>
+                    <p className="text-sm leading-relaxed max-w-xl line-clamp-2" style={{ color: "var(--text-secondary)" }}>
                       {entry.rationale}
                     </p>
                   </td>
-
-                  {/* Evidence */}
                   <td style={{ padding: "14px 16px" }}>
-                    <div
-                      className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors duration-150 hover:bg-slate-600/30"
-                      style={{ color: "var(--text-muted)" }}
-                    >
-                      <ExternalLink className="w-4 h-4 group-hover:text-white transition-colors duration-150" />
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors duration-150" style={{ color: "var(--text-muted)" }}>
+                      <ExternalLink className="w-4 h-4 opacity-40 group-hover:opacity-100 transition-opacity duration-150" />
                     </div>
                   </td>
                 </motion.tr>
@@ -267,10 +200,7 @@ export function DecisionsTable({ data }: { data: AuditLogEntry[] }) {
 
       {/* ── Pagination ────────────────────────────────────────── */}
       {totalPages > 1 && (
-        <div
-          className="flex items-center justify-between px-6 py-4"
-          style={{ borderTop: "1px solid var(--border-color)" }}
-        >
+        <div className="flex items-center justify-between px-6 py-4" style={{ borderTop: "1px solid var(--border-color)" }}>
           <span className="text-sm" style={{ color: "var(--text-muted)" }}>
             Page {page + 1} of {totalPages}
           </span>
@@ -279,10 +209,7 @@ export function DecisionsTable({ data }: { data: AuditLogEntry[] }) {
               onClick={() => setPage(Math.max(0, page - 1))}
               disabled={page === 0}
               className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150 disabled:opacity-30 disabled:cursor-not-allowed hover:opacity-80"
-              style={{
-                background: "var(--input-bg)",
-                color: "var(--text-secondary)",
-              }}
+              style={{ background: "var(--input-bg)", color: "var(--text-secondary)" }}
             >
               Previous
             </button>
@@ -290,10 +217,7 @@ export function DecisionsTable({ data }: { data: AuditLogEntry[] }) {
               onClick={() => setPage(Math.min(totalPages - 1, page + 1))}
               disabled={page >= totalPages - 1}
               className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150 disabled:opacity-30 disabled:cursor-not-allowed hover:opacity-80"
-              style={{
-                background: "var(--input-bg)",
-                color: "var(--text-secondary)",
-              }}
+              style={{ background: "var(--input-bg)", color: "var(--text-secondary)" }}
             >
               Next
             </button>
@@ -302,10 +226,7 @@ export function DecisionsTable({ data }: { data: AuditLogEntry[] }) {
       )}
 
       {/* ── Evidence Drawer ───────────────────────────────────── */}
-      <EvidenceDrawer
-        entry={selectedEntry}
-        onClose={() => setSelectedEntry(null)}
-      />
+      <EvidenceDrawer entry={selectedEntry} onClose={() => setSelectedEntry(null)} />
     </>
   );
 }
