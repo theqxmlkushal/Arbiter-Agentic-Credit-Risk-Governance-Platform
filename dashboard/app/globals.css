@@ -1,0 +1,179 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+}
+
+/* ─── Light Theme ─────────────────────────────────────────────── */
+:root {
+  --surface: #ffffff;
+  --surface-raised: #f8fafc;
+  --surface-overlay: #f1f5f9;
+  --accent: #6366f1;
+  --accent-hover: #4f46e5;
+  --accent-muted: #e0e7ff;
+  --border-color: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --color-success: #10b981;
+  --color-danger: #ef4444;
+  --color-warning: #f59e0b;
+  --color-info: #3b82f6;
+  --glow-color: rgba(99, 102, 241, 0.15);
+  --card-bg: rgba(255, 255, 255, 0.8);
+  --card-border: rgba(226, 232, 240, 0.8);
+  --sidebar-bg: #f8fafc;
+  --header-bg: rgba(255, 255, 255, 0.85);
+  --input-bg: #f1f5f9;
+  --badge-promote-bg: #d1fae5;
+  --badge-promote-text: #065f46;
+  --badge-reject-bg: #fee2e2;
+  --badge-reject-text: #991b1b;
+  --badge-review-bg: #fef3c7;
+  --badge-review-text: #92400e;
+  --chart-grid: #e2e8f0;
+  --chart-text: #64748b;
+  --skeleton-base: #e2e8f0;
+  --skeleton-shine: #f1f5f9;
+  --scrollbar-track: #f1f5f9;
+  --scrollbar-thumb: #cbd5e1;
+  --json-key: #6366f1;
+  --json-string: #059669;
+  --json-number: #d97706;
+  --json-bool: #8b5cf6;
+}
+
+/* ─── Dark Theme ──────────────────────────────────────────────── */
+[data-theme="dark"] {
+  --surface: #0a0e1a;
+  --surface-raised: #111827;
+  --surface-overlay: #1e293b;
+  --accent: #818cf8;
+  --accent-hover: #a5b4fc;
+  --accent-muted: #1e1b4b;
+  --border-color: #1e293b;
+  --border-strong: #334155;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #475569;
+  --color-success: #34d399;
+  --color-danger: #f87171;
+  --color-warning: #fbbf24;
+  --color-info: #60a5fa;
+  --glow-color: rgba(129, 140, 248, 0.25);
+  --card-bg: rgba(17, 24, 39, 0.8);
+  --card-border: rgba(30, 41, 59, 0.8);
+  --sidebar-bg: #0a0e1a;
+  --header-bg: rgba(10, 14, 26, 0.85);
+  --input-bg: #1e293b;
+  --badge-promote-bg: #064e3b;
+  --badge-promote-text: #6ee7b7;
+  --badge-reject-bg: #7f1d1d;
+  --badge-reject-text: #fca5a5;
+  --badge-review-bg: #78350f;
+  --badge-review-text: #fcd34d;
+  --chart-grid: #1e293b;
+  --chart-text: #64748b;
+  --skeleton-base: #1e293b;
+  --skeleton-shine: #334155;
+  --scrollbar-track: #111827;
+  --scrollbar-thumb: #334155;
+  --json-key: #818cf8;
+  --json-string: #34d399;
+  --json-number: #fbbf24;
+  --json-bool: #a78bfa;
+}
+
+/* ─── Global Styles ───────────────────────────────────────────── */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--surface);
+  color: var(--text-primary);
+  transition: background 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Scrollbar ───────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ─── Telemetry Mode Extras ──────────────────────────────────── */
+[data-mode="telemetry"] body {
+  font-family: var(--font-mono);
+}
+
+[data-mode="telemetry"] .glass-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+[data-mode="telemetry"] .glow-border {
+  border: 1px solid var(--accent);
+  box-shadow: 0 0 15px var(--glow-color);
+}
+
+[data-mode="telemetry"] .glow-text {
+  text-shadow: 0 0 10px var(--glow-color);
+}
+
+/* ─── Auditor Mode Extras ────────────────────────────────────── */
+[data-mode="auditor"] .dense-table th {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+[data-mode="auditor"] .dense-table td {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.8125rem;
+}
+
+/* ─── Animations ─────────────────────────────────────────────── */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+[data-mode="telemetry"] .animated-gradient {
+  background: linear-gradient(135deg, var(--surface), var(--surface-raised), var(--surface-overlay));
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+}
+
+/* ─── Selection ──────────────────────────────────────────────── */
+::selection {
+  background: var(--accent);
+  color: white;
+}
