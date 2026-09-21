@@ -14,7 +14,8 @@ export function ModelGrid({ models }: { models: ModelVersion[] }) {
 
   const filtered = useMemo(() => {
     let result = models;
-    if (stageFilter !== "all") result = result.filter((m) => m.stage === stageFilter);
+    if (stageFilter !== "all")
+      result = result.filter((m) => m.stage === stageFilter);
     if (search) {
       const q = search.toLowerCase();
       result = result.filter(
@@ -37,7 +38,7 @@ export function ModelGrid({ models }: { models: ModelVersion[] }) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       {/* Toolbar */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
         {/* Search */}
@@ -51,7 +52,7 @@ export function ModelGrid({ models }: { models: ModelVersion[] }) {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search models..."
-            className="w-full pl-9 pr-8 py-2 rounded-lg text-sm outline-none transition-all duration-200"
+            className="w-full pl-10 pr-10 py-2.5 rounded-lg text-sm outline-none transition-all duration-200"
             style={{
               background: "var(--input-bg)",
               color: "var(--text-primary)",
@@ -61,7 +62,7 @@ export function ModelGrid({ models }: { models: ModelVersion[] }) {
           {search && (
             <button
               onClick={() => setSearch("")}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full flex items-center justify-center hover:opacity-70 transition-opacity"
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full flex items-center justify-center hover:opacity-70 transition-opacity"
               style={{ color: "var(--text-muted)" }}
             >
               <X className="w-3 h-3" />
@@ -70,18 +71,20 @@ export function ModelGrid({ models }: { models: ModelVersion[] }) {
         </div>
 
         {/* Stage filter pills */}
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-2">
           {STAGE_FILTERS.map((f) => {
             const active = stageFilter === f;
             return (
               <button
                 key={f}
                 onClick={() => setStageFilter(f)}
-                className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150"
+                className="px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-150"
                 style={{
                   background: active ? "var(--accent)" : "var(--input-bg)",
                   color: active ? "white" : "var(--text-secondary)",
-                  border: `1px solid ${active ? "var(--accent)" : "var(--border-color)"}`,
+                  border: `1px solid ${
+                    active ? "var(--accent)" : "var(--border-color)"
+                  }`,
                 }}
               >
                 {f === "all" ? "All" : f}
@@ -99,9 +102,13 @@ export function ModelGrid({ models }: { models: ModelVersion[] }) {
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
         {filtered.map((model, i) => (
-          <ModelCard key={`${model.name}-${model.version}`} model={model} index={i} />
+          <ModelCard
+            key={`${model.name}-${model.version}`}
+            model={model}
+            index={i}
+          />
         ))}
       </div>
     </div>

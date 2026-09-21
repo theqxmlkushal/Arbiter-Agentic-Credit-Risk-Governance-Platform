@@ -25,16 +25,17 @@ const STYLES = {
 } as const;
 
 export function DecisionBadge({ decision }: { decision: string }) {
-  const style = STYLES[decision as keyof typeof STYLES] || STYLES.human_review;
+  const style =
+    STYLES[decision as keyof typeof STYLES] || STYLES.human_review;
   const Icon = style.icon;
 
   return (
     <motion.span
       whileHover={{ scale: 1.05 }}
-      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold"
+      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
       style={{ background: style.bg, color: style.text }}
     >
-      <Icon className="w-3 h-3" />
+      <Icon className="w-3.5 h-3.5" />
       {style.label}
     </motion.span>
   );
