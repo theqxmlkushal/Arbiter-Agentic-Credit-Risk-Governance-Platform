@@ -1,31 +1,15 @@
-"use client";
+import type { Metadata } from "next";
+import "./globals.css";
 
-import type { ReactNode } from "react";
-import { Sidebar } from "@/components/layout/Sidebar";
-import { Header } from "@/components/layout/Header";
-import { ThemeProvider } from "@/lib/theme-context";
-import { ModeProvider } from "@/lib/mode-context";
+export const metadata: Metadata = {
+  title: "Arbiter — Governance Dashboard",
+  description: "Credit-risk model governance dashboard",
+};
 
-export default function DashboardLayout({ children }: { children: ReactNode }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <title>Arbiter — Governance Dashboard</title>
-        <meta name="description" content="Credit-risk model governance dashboard" />
-      </head>
-      <body>
-        <ThemeProvider>
-          <ModeProvider>
-            <div className="flex min-h-screen">
-              <Sidebar />
-              <div className="flex-1 flex flex-col min-h-screen">
-                <Header />
-                <main className="flex-1 animated-gradient">{children}</main>
-              </div>
-            </div>
-          </ModeProvider>
-        </ThemeProvider>
-      </body>
+    <html lang="en" data-theme="dark" data-mode="telemetry" suppressHydrationWarning>
+      <body>{children}</body>
     </html>
   );
 }

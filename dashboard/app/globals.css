@@ -1,11 +1,6 @@
 @import "tailwindcss";
 
-@theme {
-  --font-sans: "Inter", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", "Fira Code", monospace;
-}
-
-/* ─── Light Theme ─────────────────────────────────────────────── */
+/* ─── Light Theme ────────────────────────────────────────────── */
 :root {
   --surface: #ffffff;
   --surface-raised: #f8fafc;
@@ -46,7 +41,7 @@
   --json-bool: #8b5cf6;
 }
 
-/* ─── Dark Theme ──────────────────────────────────────────────── */
+/* ─── Dark Theme ─────────────────────────────────────────────── */
 [data-theme="dark"] {
   --surface: #0a0e1a;
   --surface-raised: #111827;
@@ -87,7 +82,7 @@
   --json-bool: #a78bfa;
 }
 
-/* ─── Global Styles ───────────────────────────────────────────── */
+/* ─── Global Styles ──────────────────────────────────────────── */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -99,67 +94,42 @@ html {
 }
 
 body {
-  font-family: var(--font-sans);
+  font-family: "Inter", system-ui, sans-serif;
   background: var(--surface);
   color: var(--text-primary);
-  transition: background 0.3s ease, color 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ─── Scrollbar ───────────────────────────────────────────────── */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: var(--scrollbar-track);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--scrollbar-thumb);
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
-}
+/* ─── Scrollbar ──────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
-/* ─── Telemetry Mode Extras ──────────────────────────────────── */
-[data-mode="telemetry"] body {
-  font-family: var(--font-mono);
+/* ─── Glass Card ─────────────────────────────────────────────── */
+.glass-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
 }
 
 [data-mode="telemetry"] .glass-card {
-  background: var(--card-bg);
   backdrop-filter: blur(16px);
-  border: 1px solid var(--card-border);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
 }
 
 [data-mode="telemetry"] .glow-border {
   border: 1px solid var(--accent);
-  box-shadow: 0 0 15px var(--glow-color);
+  box-shadow: 0 0 15px var(--glow-color), 0 0 30px var(--glow-color);
 }
 
 [data-mode="telemetry"] .glow-text {
   text-shadow: 0 0 10px var(--glow-color);
 }
 
-/* ─── Auditor Mode Extras ────────────────────────────────────── */
-[data-mode="auditor"] .dense-table th {
-  font-weight: 600;
-  text-transform: uppercase;
-  font-size: 0.7rem;
-  letter-spacing: 0.05em;
-  color: var(--text-muted);
-}
-
-[data-mode="auditor"] .dense-table td {
-  padding: 0.4rem 0.75rem;
-  font-size: 0.8125rem;
-}
-
-/* ─── Animations ─────────────────────────────────────────────── */
+/* ─── Animated Gradient (telemetry) ──────────────────────────── */
 @keyframes gradientShift {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
@@ -167,9 +137,19 @@ body {
 }
 
 [data-mode="telemetry"] .animated-gradient {
-  background: linear-gradient(135deg, var(--surface), var(--surface-raised), var(--surface-overlay));
+  background: linear-gradient(135deg, var(--surface) 0%, var(--surface-raised) 50%, var(--surface-overlay) 100%);
   background-size: 400% 400%;
   animation: gradientShift 15s ease infinite;
+}
+
+/* ─── Shimmer Animation ─────────────────────────────────────── */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s linear infinite;
 }
 
 /* ─── Selection ──────────────────────────────────────────────── */
