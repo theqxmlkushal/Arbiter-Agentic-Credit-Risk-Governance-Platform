@@ -27,7 +27,7 @@ export default function ModelsPage() {
         >
           Model Registry
         </motion.h1>
-        <p className="text-sm mt-2" style={{ color: "var(--text-secondary)" }}>
+        <p className="text-sm mt-2" style={{ color: "var(--text-muted)" }}>
           {mode === "telemetry"
             ? "Live view of all registered models, their stages, and performance metrics."
             : `${MOCK_MODELS.length} model versions. Current champion: ${production?.name} v${production?.version}.`}
@@ -63,12 +63,21 @@ export default function ModelsPage() {
                   className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
                   style={{ background: "rgba(16, 185, 129, 0.12)" }}
                 >
-                  <Activity className="w-6 h-6" style={{ color: "var(--color-success)" }} />
+                  <Activity
+                    className="w-6 h-6"
+                    style={{ color: "var(--color-success)" }}
+                  />
                 </div>
                 <div className="min-w-0">
-                  <h2 className="text-lg font-bold" style={{ color: "var(--text-primary)" }}>
+                  <h2
+                    className="text-lg font-bold"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     {production.name}
-                    <span className="ml-2 text-sm font-mono" style={{ color: "var(--accent)" }}>
+                    <span
+                      className="ml-2 text-sm font-mono"
+                      style={{ color: "var(--accent)" }}
+                    >
                       v{production.version}
                     </span>
                   </h2>
@@ -80,17 +89,36 @@ export default function ModelsPage() {
 
               <div className="flex gap-8 lg:ml-auto">
                 {[
-                  { label: "AUC", val: production.metrics.roc_auc.toFixed(3), good: production.metrics.roc_auc >= 0.8 },
-                  { label: "Gini", val: production.metrics.gini.toFixed(3), good: production.metrics.gini >= 0.6 },
-                  { label: "ECE", val: production.metrics.ece.toFixed(3), good: production.metrics.ece <= 0.04 },
+                  {
+                    label: "AUC",
+                    val: production.metrics.roc_auc.toFixed(3),
+                    good: production.metrics.roc_auc >= 0.8,
+                  },
+                  {
+                    label: "Gini",
+                    val: production.metrics.gini.toFixed(3),
+                    good: production.metrics.gini >= 0.6,
+                  },
+                  {
+                    label: "ECE",
+                    val: production.metrics.ece.toFixed(3),
+                    good: production.metrics.ece <= 0.04,
+                  },
                 ].map(({ label, val, good }) => (
                   <div key={label} className="text-center">
-                    <p className="text-[11px] uppercase tracking-wider mb-1" style={{ color: "var(--text-muted)" }}>
+                    <p
+                      className="text-[11px] uppercase tracking-wider mb-1"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       {label}
                     </p>
                     <p
                       className="text-xl font-bold font-mono"
-                      style={{ color: good ? "var(--color-success)" : "var(--color-danger)" }}
+                      style={{
+                        color: good
+                          ? "var(--color-success)"
+                          : "var(--color-danger)",
+                      }}
                     >
                       {val}
                     </p>

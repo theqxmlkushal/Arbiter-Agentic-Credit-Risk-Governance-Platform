@@ -26,10 +26,10 @@ export function Sidebar() {
       <Link href="/" className="flex items-center gap-3 px-5 py-5 group">
         <motion.div
           whileHover={{ rotate: 8, scale: 1.08 }}
-          className="w-9 h-9 rounded-xl flex items-center justify-center"
+          className="w-10 h-10 rounded-xl flex items-center justify-center"
           style={{ background: "var(--accent)", color: "white" }}
         >
-          <Scale className="w-4.5 h-4.5" />
+          <Scale className="w-5 h-5" />
         </motion.div>
         <div>
           <h1 className="text-base font-bold" style={{ color: "var(--text-primary)" }}>
@@ -42,10 +42,10 @@ export function Sidebar() {
       </Link>
 
       {/* Divider */}
-      <div className="mx-4" style={{ borderBottom: "1px solid var(--border-color)" }} />
+      <div className="mx-5" style={{ borderBottom: "1px solid var(--border-color)" }} />
 
       {/* Navigation */}
-      <nav className="flex flex-col gap-1 px-3 mt-4">
+      <nav className="flex flex-col gap-1 px-3 mt-5">
         {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
           const active = pathname === href;
           return (
@@ -56,7 +56,7 @@ export function Sidebar() {
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 relative"
                 style={{
                   background: active ? "var(--accent-muted)" : "transparent",
-                  color: active ? "var(--accent)" : "var(--text-secondary)",
+                  color: active ? "var(--accent)" : "var(--text-muted)",
                 }}
               >
                 <Icon className="w-4 h-4" />
@@ -75,7 +75,7 @@ export function Sidebar() {
       </nav>
 
       {/* Bottom Status */}
-      <div className="mt-auto px-5 pb-5">
+      <div className="mt-auto px-5 pb-6">
         <div
           className="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px]"
           style={{ background: "var(--input-bg)", color: "var(--text-muted)" }}

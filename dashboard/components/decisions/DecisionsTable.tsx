@@ -58,7 +58,10 @@ export function DecisionsTable({ data }: { data: AuditLogEntry[] }) {
   return (
     <>
       {/* ── Toolbar ──────────────────────────────────────────── */}
-      <div className="px-6 py-4 space-y-3" style={{ borderBottom: "1px solid var(--border-color)" }}>
+      <div
+        className="px-6 py-4 space-y-3"
+        style={{ borderBottom: "1px solid var(--border-color)" }}
+      >
         {/* Search row */}
         <div className="relative max-w-md">
           <Search
@@ -73,7 +76,7 @@ export function DecisionsTable({ data }: { data: AuditLogEntry[] }) {
               setPage(0);
             }}
             placeholder="Search by model, version, or rationale..."
-            className="w-full pl-10 pr-10 py-2.5 rounded-lg text-sm outline-none transition-all duration-200 focus:ring-2"
+            className="w-full pl-10 pr-10 py-2.5 rounded-lg text-sm outline-none transition-all duration-200 placeholder:text-slate-400"
             style={{
               background: "var(--input-bg)",
               color: "var(--text-primary)",
@@ -95,7 +98,7 @@ export function DecisionsTable({ data }: { data: AuditLogEntry[] }) {
         </div>
 
         {/* Filter pills + result count */}
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-3 flex-wrap">
           {FILTERS.map(({ key, label }) => {
             const active = filter === key;
             return (
@@ -105,18 +108,21 @@ export function DecisionsTable({ data }: { data: AuditLogEntry[] }) {
                   setFilter(key);
                   setPage(0);
                 }}
-                className="px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-150"
+                className="px-3 py-1 rounded-full text-xs font-medium transition-all duration-150"
                 style={{
-                  background: active ? "var(--accent)" : "var(--input-bg)",
-                  color: active ? "white" : "var(--text-secondary)",
-                  border: `1px solid ${active ? "var(--accent)" : "var(--border-color)"}`,
+                  background: active ? "var(--accent)" : "transparent",
+                  color: active ? "white" : "var(--text-muted)",
+                  border: `1px solid ${active ? "var(--accent)" : "var(--border-strong)"}`,
                 }}
               >
                 {label}
               </button>
             );
           })}
-          <span className="ml-auto text-xs" style={{ color: "var(--text-muted)" }}>
+          <span
+            className="ml-auto text-sm pl-2"
+            style={{ color: "var(--text-muted)" }}
+          >
             {filtered.length} result{filtered.length !== 1 ? "s" : ""}
           </span>
         </div>
@@ -124,30 +130,35 @@ export function DecisionsTable({ data }: { data: AuditLogEntry[] }) {
 
       {/* ── Table ─────────────────────────────────────────────── */}
       <div className="overflow-x-auto">
-        <table className="w-full" style={{ borderCollapse: "separate", borderSpacing: 0 }}>
+        <table
+          className="w-full"
+          style={{ borderCollapse: "separate", borderSpacing: 0 }}
+        >
           <thead>
             <tr>
               {[
-                { key: "time", label: "Time", sortable: true, width: "140px" },
-                { key: "model", label: "Model", width: "180px" },
-                { key: "version", label: "Ver", width: "60px" },
-                { key: "decision", label: "Decision", width: "130px" },
+                { key: "time", label: "Time", sortable: true },
+                { key: "model", label: "Model" },
+                { key: "version", label: "Ver" },
+                { key: "decision", label: "Decision" },
                 { key: "rationale", label: "Rationale", hideOnMobile: true },
-                { key: "evidence", label: "", width: "50px" },
+                { key: "evidence", label: "", width: "60px" },
               ].map(({ key, label, sortable, hideOnMobile, width }) => (
                 <th
                   key={key}
-                  className={`text-left text-[11px] font-semibold uppercase tracking-wider ${hideOnMobile ? "hidden md:table-cell" : ""}`}
+                  className={`text-left text-xs font-semibold uppercase tracking-wider ${hideOnMobile ? "hidden md:table-cell" : ""}`}
                   style={{
                     color: "var(--text-muted)",
                     borderBottom: "1px solid var(--border-color)",
-                    padding: "10px 16px",
+                    padding: "12px 16px",
                     width: width || "auto",
                   }}
                 >
                   {sortable ? (
                     <button
-                      onClick={() => setSortDir(sortDir === "desc" ? "asc" : "desc")}
+                      onClick={() =>
+                        setSortDir(sortDir === "desc" ? "asc" : "desc")
+                      }
                       className="flex items-center gap-1 hover:opacity-70 transition-opacity"
                     >
                       {label}
@@ -185,7 +196,10 @@ export function DecisionsTable({ data }: { data: AuditLogEntry[] }) {
                   {/* Time */}
                   <td
                     className="whitespace-nowrap text-sm"
-                    style={{ padding: "14px 16px", color: "var(--text-secondary)" }}
+                    style={{
+                      padding: "14px 16px",
+                      color: "var(--text-secondary)",
+                    }}
                   >
                     {new Date(entry.created_at).toLocaleDateString("en-US", {
                       month: "short",
@@ -224,19 +238,24 @@ export function DecisionsTable({ data }: { data: AuditLogEntry[] }) {
 
                   {/* Rationale */}
                   <td
-                    className="hidden md:table-cell text-sm max-w-[320px]"
-                    style={{ padding: "14px 16px", color: "var(--text-muted)" }}
+                    className="hidden md:table-cell"
+                    style={{ padding: "14px 16px" }}
                   >
-                    <span className="line-clamp-2">{entry.rationale}</span>
+                    <p
+                      className="text-sm leading-relaxed max-w-xl line-clamp-2"
+                      style={{ color: "var(--text-secondary)" }}
+                    >
+                      {entry.rationale}
+                    </p>
                   </td>
 
                   {/* Evidence */}
                   <td style={{ padding: "14px 16px" }}>
                     <div
-                      className="w-8 h-8 rounded-lg flex items-center justify-center opacity-30 group-hover:opacity-100 transition-opacity duration-150"
-                      style={{ background: "var(--input-bg)", color: "var(--text-muted)" }}
+                      className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors duration-150 hover:bg-slate-600/30"
+                      style={{ color: "var(--text-muted)" }}
                     >
-                      <ExternalLink className="w-3.5 h-3.5" />
+                      <ExternalLink className="w-4 h-4 group-hover:text-white transition-colors duration-150" />
                     </div>
                   </td>
                 </motion.tr>
@@ -252,23 +271,29 @@ export function DecisionsTable({ data }: { data: AuditLogEntry[] }) {
           className="flex items-center justify-between px-6 py-4"
           style={{ borderTop: "1px solid var(--border-color)" }}
         >
-          <span className="text-xs" style={{ color: "var(--text-muted)" }}>
+          <span className="text-sm" style={{ color: "var(--text-muted)" }}>
             Page {page + 1} of {totalPages}
           </span>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setPage(Math.max(0, page - 1))}
               disabled={page === 0}
-              className="px-4 py-2 rounded-lg text-xs font-medium transition-all duration-150 disabled:opacity-30 disabled:cursor-not-allowed hover:opacity-80"
-              style={{ background: "var(--input-bg)", color: "var(--text-secondary)" }}
+              className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150 disabled:opacity-30 disabled:cursor-not-allowed hover:opacity-80"
+              style={{
+                background: "var(--input-bg)",
+                color: "var(--text-secondary)",
+              }}
             >
               Previous
             </button>
             <button
               onClick={() => setPage(Math.min(totalPages - 1, page + 1))}
               disabled={page >= totalPages - 1}
-              className="px-4 py-2 rounded-lg text-xs font-medium transition-all duration-150 disabled:opacity-30 disabled:cursor-not-allowed hover:opacity-80"
-              style={{ background: "var(--input-bg)", color: "var(--text-secondary)" }}
+              className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150 disabled:opacity-30 disabled:cursor-not-allowed hover:opacity-80"
+              style={{
+                background: "var(--input-bg)",
+                color: "var(--text-secondary)",
+              }}
             >
               Next
             </button>
@@ -277,7 +302,10 @@ export function DecisionsTable({ data }: { data: AuditLogEntry[] }) {
       )}
 
       {/* ── Evidence Drawer ───────────────────────────────────── */}
-      <EvidenceDrawer entry={selectedEntry} onClose={() => setSelectedEntry(null)} />
+      <EvidenceDrawer
+        entry={selectedEntry}
+        onClose={() => setSelectedEntry(null)}
+      />
     </>
   );
 }

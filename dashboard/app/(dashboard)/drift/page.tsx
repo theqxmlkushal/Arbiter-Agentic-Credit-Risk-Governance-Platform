@@ -45,7 +45,7 @@ export default function DriftPage() {
         >
           Drift & Fairness
         </motion.h1>
-        <p className="text-sm mt-2" style={{ color: "var(--text-secondary)" }}>
+        <p className="text-sm mt-2" style={{ color: "var(--text-muted)" }}>
           {mode === "telemetry"
             ? "Real-time drift detection and fairness metric tracking across model versions."
             : `Latest check: ${latest ? new Date(latest.created_at).toLocaleDateString() : "N/A"}. Dataset drift: ${latest?.dataset_drift ? "Detected" : "None"}.`}
@@ -122,7 +122,10 @@ export default function DriftPage() {
                 >
                   {value}
                 </p>
-                <p className="text-xs mt-1.5 truncate" style={{ color: "var(--text-muted)" }}>
+                <p
+                  className="text-xs mt-1.5 truncate"
+                  style={{ color: "var(--text-muted)" }}
+                >
                   {label}
                 </p>
               </div>

@@ -5,20 +5,23 @@ import { CheckCircle, XCircle, AlertTriangle } from "lucide-react";
 
 const STYLES = {
   promote: {
-    bg: "var(--badge-promote-bg)",
-    text: "var(--badge-promote-text)",
+    bg: "rgba(16, 185, 129, 0.12)",
+    text: "#34d399",
+    border: "rgba(16, 185, 129, 0.25)",
     icon: CheckCircle,
     label: "Promote",
   },
   reject: {
-    bg: "var(--badge-reject-bg)",
-    text: "var(--badge-reject-text)",
+    bg: "rgba(239, 68, 68, 0.12)",
+    text: "#f87171",
+    border: "rgba(239, 68, 68, 0.25)",
     icon: XCircle,
     label: "Reject",
   },
   human_review: {
-    bg: "var(--badge-review-bg)",
-    text: "var(--badge-review-text)",
+    bg: "rgba(245, 158, 11, 0.12)",
+    text: "#fbbf24",
+    border: "rgba(245, 158, 11, 0.25)",
     icon: AlertTriangle,
     label: "Review",
   },
@@ -32,8 +35,12 @@ export function DecisionBadge({ decision }: { decision: string }) {
   return (
     <motion.span
       whileHover={{ scale: 1.05 }}
-      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
-      style={{ background: style.bg, color: style.text }}
+      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium"
+      style={{
+        background: style.bg,
+        color: style.text,
+        border: `1px solid ${style.border}`,
+      }}
     >
       <Icon className="w-3.5 h-3.5" />
       {style.label}

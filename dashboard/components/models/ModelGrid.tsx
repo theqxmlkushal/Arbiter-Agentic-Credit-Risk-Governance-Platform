@@ -52,7 +52,7 @@ export function ModelGrid({ models }: { models: ModelVersion[] }) {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search models..."
-            className="w-full pl-10 pr-10 py-2.5 rounded-lg text-sm outline-none transition-all duration-200"
+            className="w-full pl-10 pr-10 py-2.5 rounded-lg text-sm outline-none transition-all duration-200 placeholder:text-slate-400"
             style={{
               background: "var(--input-bg)",
               color: "var(--text-primary)",
@@ -78,13 +78,11 @@ export function ModelGrid({ models }: { models: ModelVersion[] }) {
               <button
                 key={f}
                 onClick={() => setStageFilter(f)}
-                className="px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-150"
+                className="px-3 py-1 rounded-full text-xs font-medium transition-all duration-150"
                 style={{
-                  background: active ? "var(--accent)" : "var(--input-bg)",
-                  color: active ? "white" : "var(--text-secondary)",
-                  border: `1px solid ${
-                    active ? "var(--accent)" : "var(--border-color)"
-                  }`,
+                  background: active ? "var(--accent)" : "transparent",
+                  color: active ? "white" : "var(--text-muted)",
+                  border: `1px solid ${active ? "var(--accent)" : "var(--border-strong)"}`,
                 }}
               >
                 {f === "all" ? "All" : f}
@@ -95,7 +93,7 @@ export function ModelGrid({ models }: { models: ModelVersion[] }) {
 
         {/* Count */}
         <div className="hidden sm:flex items-center ml-auto">
-          <span className="text-xs" style={{ color: "var(--text-muted)" }}>
+          <span className="text-sm pl-2" style={{ color: "var(--text-muted)" }}>
             {filtered.length} model{filtered.length !== 1 ? "s" : ""}
           </span>
         </div>

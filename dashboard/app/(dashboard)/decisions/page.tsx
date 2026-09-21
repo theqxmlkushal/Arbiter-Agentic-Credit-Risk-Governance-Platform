@@ -57,7 +57,7 @@ export default function DecisionsPage() {
         >
           Governance Decisions
         </motion.h1>
-        <p className="text-sm mt-2" style={{ color: "var(--text-secondary)" }}>
+        <p className="text-sm mt-2" style={{ color: "var(--text-muted)" }}>
           {mode === "telemetry"
             ? "Real-time audit trail of every model promotion, rejection, and review decision."
             : `${MOCK_AUDIT_LOG.length} decisions recorded. Filter by status or search by model name.`}
@@ -86,10 +86,16 @@ export default function DecisionsPage() {
               <Icon className="w-6 h-6" style={{ color }} />
             </div>
             <div className="min-w-0">
-              <p className="text-2xl font-bold font-mono leading-none" style={{ color }}>
+              <p
+                className="text-2xl font-bold font-mono leading-none"
+                style={{ color }}
+              >
                 {value}
               </p>
-              <p className="text-xs mt-1.5 truncate" style={{ color: "var(--text-muted)" }}>
+              <p
+                className="text-xs mt-1.5 truncate"
+                style={{ color: "var(--text-muted)" }}
+              >
                 {label}
               </p>
             </div>
@@ -108,8 +114,14 @@ export default function DecisionsPage() {
           border: "1px solid var(--card-border)",
         }}
       >
-        <div className="px-6 py-4" style={{ borderBottom: "1px solid var(--border-color)" }}>
-          <h2 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
+        <div
+          className="px-6 py-4"
+          style={{ borderBottom: "1px solid var(--border-color)" }}
+        >
+          <h2
+            className="text-sm font-semibold"
+            style={{ color: "var(--text-primary)" }}
+          >
             Audit Log
           </h2>
           <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
