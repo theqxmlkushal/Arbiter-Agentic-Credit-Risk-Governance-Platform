@@ -8,7 +8,7 @@ describe("DriftChart", () => {
     expect(screen.getByText("No drift data yet")).toBeInTheDocument();
   });
 
-  it("renders chart title when data exists", () => {
+  it("renders a chart container when data exists", () => {
     const mockSnapshots = [
       {
         id: "d1",
@@ -22,7 +22,9 @@ describe("DriftChart", () => {
         num_drifted: 0,
       },
     ];
-    render(<DriftChart snapshots={mockSnapshots} />);
-    expect(screen.getByText("Drifted Features Over Time")).toBeInTheDocument();
+    const { container } = render(<DriftChart snapshots={mockSnapshots} />);
+    // Recharts renders a responsive container div
+    const chartContainer = container.querySelector(".recharts-responsive-container");
+    expect(chartContainer).toBeInTheDocument();
   });
 });

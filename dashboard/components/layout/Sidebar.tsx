@@ -16,41 +16,44 @@ export function Sidebar() {
 
   return (
     <aside
-      className="hidden lg:flex flex-col w-64 h-screen sticky top-0 p-4 gap-2"
+      className="hidden lg:flex flex-col w-56 h-screen sticky top-0"
       style={{
         background: "var(--sidebar-bg)",
         borderRight: "1px solid var(--border-color)",
       }}
     >
       {/* Logo */}
-      <Link href="/" className="flex items-center gap-3 px-3 py-4 mb-4 group">
+      <Link href="/" className="flex items-center gap-3 px-5 py-5 group">
         <motion.div
-          whileHover={{ rotate: 10, scale: 1.1 }}
-          className="w-10 h-10 rounded-xl flex items-center justify-center"
+          whileHover={{ rotate: 8, scale: 1.08 }}
+          className="w-9 h-9 rounded-xl flex items-center justify-center"
           style={{ background: "var(--accent)", color: "white" }}
         >
-          <Scale className="w-5 h-5" />
+          <Scale className="w-4.5 h-4.5" />
         </motion.div>
         <div>
-          <h1 className="text-lg font-bold" style={{ color: "var(--text-primary)" }}>
+          <h1 className="text-base font-bold" style={{ color: "var(--text-primary)" }}>
             Arbiter
           </h1>
-          <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+          <p className="text-[11px]" style={{ color: "var(--text-muted)" }}>
             Governance
           </p>
         </div>
       </Link>
 
+      {/* Divider */}
+      <div className="mx-4" style={{ borderBottom: "1px solid var(--border-color)" }} />
+
       {/* Navigation */}
-      <nav className="flex flex-col gap-1 mt-2">
+      <nav className="flex flex-col gap-1 px-3 mt-4">
         {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
           const active = pathname === href;
           return (
             <Link key={href} href={href}>
               <motion.div
-                whileHover={{ x: 4 }}
+                whileHover={{ x: 3 }}
                 whileTap={{ scale: 0.98 }}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200"
+                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 relative"
                 style={{
                   background: active ? "var(--accent-muted)" : "transparent",
                   color: active ? "var(--accent)" : "var(--text-secondary)",
@@ -60,8 +63,8 @@ export function Sidebar() {
                 <span>{label}</span>
                 {active && (
                   <motion.div
-                    layoutId="nav-indicator"
-                    className="ml-auto w-1.5 h-1.5 rounded-full"
+                    layoutId="sidebar-indicator"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full"
                     style={{ background: "var(--accent)" }}
                   />
                 )}
@@ -71,14 +74,14 @@ export function Sidebar() {
         })}
       </nav>
 
-      {/* Status */}
-      <div className="mt-auto px-3 py-4">
+      {/* Bottom Status */}
+      <div className="mt-auto px-5 pb-5">
         <div
-          className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs"
+          className="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px]"
           style={{ background: "var(--input-bg)", color: "var(--text-muted)" }}
         >
-          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span>Pipeline: Active</span>
+          <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          <span>Pipeline active</span>
         </div>
       </div>
     </aside>

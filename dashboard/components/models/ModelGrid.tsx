@@ -2,9 +2,11 @@
 
 import { useState, useMemo } from "react";
 import { ModelCard } from "./ModelCard";
-import { SearchInput } from "@/components/ui/SearchInput";
 import { EmptyState } from "@/components/shared/EmptyState";
+import { Search, X } from "lucide-react";
 import type { ModelVersion } from "@/lib/mock-data";
+
+const STAGE_FILTERS = ["all", "Production", "Staging", "Archived"] as const;
 
 export function ModelGrid({ models }: { models: ModelVersion[] }) {
   const [search, setSearch] = useState("");
@@ -35,26 +37,64 @@ export function ModelGrid({ models }: { models: ModelVersion[] }) {
   }
 
   return (
-    <>
+    <div className="space-y-4">
       {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-6">
-        <div className="flex-1 w-full sm:max-w-xs">
-          <SearchInput value={search} onChange={setSearch} placeholder="Search models..." />
-        </div>
-        <div className="flex items-center gap-2">
-          {["all", "Production", "Staging", "Archived"].map((f) => (
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+        {/* Search */}
+        <div className="relative flex-1 max-w-sm">
+          <Search
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4"
+            style={{ color: "var(--text-muted)" }}
+          />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search models..."
+            className="w-full pl-9 pr-8 py-2 rounded-lg text-sm outline-none transition-all duration-200"
+            style={{
+              background: "var(--input-bg)",
+              color: "var(--text-primary)",
+              border: "1px solid var(--border-color)",
+            }}
+          />
+          {search && (
             <button
-              key={f}
-              onClick={() => setStageFilter(f)}
-              className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 hover:scale-105"
-              style={{
-                background: stageFilter === f ? "var(--accent)" : "var(--input-bg)",
-                color: stageFilter === f ? "white" : "var(--text-secondary)",
-              }}
+              onClick={() => setSearch("")}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full flex items-center justify-center hover:opacity-70 transition-opacity"
+              style={{ color: "var(--text-muted)" }}
             >
-              {f === "all" ? "All" : f}
+              <X className="w-3 h-3" />
             </button>
-          ))}
+          )}
+        </div>
+
+        {/* Stage filter pills */}
+        <div className="flex items-center gap-1.5">
+          {STAGE_FILTERS.map((f) => {
+            const active = stageFilter === f;
+            return (
+              <button
+                key={f}
+                onClick={() => setStageFilter(f)}
+                className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150"
+                style={{
+                  background: active ? "var(--accent)" : "var(--input-bg)",
+                  color: active ? "white" : "var(--text-secondary)",
+                  border: `1px solid ${active ? "var(--accent)" : "var(--border-color)"}`,
+                }}
+              >
+                {f === "all" ? "All" : f}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Count */}
+        <div className="hidden sm:flex items-center ml-auto">
+          <span className="text-xs" style={{ color: "var(--text-muted)" }}>
+            {filtered.length} model{filtered.length !== 1 ? "s" : ""}
+          </span>
         </div>
       </div>
 
@@ -64,6 +104,6 @@ export function ModelGrid({ models }: { models: ModelVersion[] }) {
           <ModelCard key={`${model.name}-${model.version}`} model={model} index={i} />
         ))}
       </div>
-    </>
+    </div>
   );
 }
