@@ -12,7 +12,11 @@ export function AppShell({ children }: { children: ReactNode }) {
         <Sidebar />
         <div className="flex-1 flex flex-col min-h-screen min-w-0">
           <Header />
-          <main className="flex-1 overflow-y-auto animated-gradient">{children}</main>
+          <main className="flex-1 overflow-y-auto animated-gradient ambient-mesh">
+            <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-8">
+              {children}
+            </div>
+          </main>
         </div>
       </div>
     </Providers>

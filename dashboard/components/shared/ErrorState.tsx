@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { AlertTriangle } from "lucide-react";
+import { AlertCircle, RefreshCw } from "lucide-react";
 
 export function ErrorState({
   title = "Something went wrong",
@@ -14,26 +14,40 @@ export function ErrorState({
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
+      initial={{ opacity: 0, scale: 0.96 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="flex flex-col items-center justify-center py-20 px-4"
+      className="flex flex-col items-center justify-center py-16 px-4 text-center"
     >
-      <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 bg-red-500/10">
-        <AlertTriangle className="w-8 h-8 text-red-500" />
+      <div
+        className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4 border"
+        style={{
+          background: "var(--color-danger-bg)",
+          borderColor: "var(--color-danger-border)",
+          color: "var(--color-danger)",
+        }}
+      >
+        <AlertCircle className="w-7 h-7" />
       </div>
-      <h3 className="text-lg font-semibold mb-2" style={{ color: "var(--text-primary)" }}>
+      <h3
+        className="text-base font-semibold mb-1.5"
+        style={{ color: "var(--text-primary)" }}
+      >
         {title}
       </h3>
-      <p className="text-sm max-w-md text-center mb-4" style={{ color: "var(--text-secondary)" }}>
+      <p
+        className="text-xs sm:text-sm max-w-md mb-5 leading-relaxed"
+        style={{ color: "var(--text-muted)" }}
+      >
         {description}
       </p>
       {onRetry && (
         <button
           onClick={onRetry}
-          className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 active:scale-95"
-          style={{ background: "var(--accent)", color: "white" }}
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold text-white shadow-sm transition-all duration-150 hover:opacity-90 active:scale-95 cursor-pointer"
+          style={{ background: "var(--accent)" }}
         >
-          Try Again
+          <RefreshCw className="w-3.5 h-3.5" />
+          <span>Try Again</span>
         </button>
       )}
     </motion.div>
